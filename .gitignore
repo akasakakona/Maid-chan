@@ -1,0 +1,8 @@
+
+*.mp3
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+config.txt
+.vs/Maid-chan/v16/.suo
+.vs/slnx.sqlite
+config1.txt
