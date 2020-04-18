@@ -19,7 +19,7 @@ PPASS = ""
 
 @maid.event
 async def on_ready():
-    await maid.change_presence(status=discord.Status.idle, activity = discord.Game(" with Araragi"))
+    await maid.change_presence(status=discord.Status.idle, activity = discord.Game(" with いーちゃん"))
     print(f"Logged in as {maid.user.name}")
 
 XD = False
