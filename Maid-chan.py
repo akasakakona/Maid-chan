@@ -423,7 +423,7 @@ async def saveSet(ctx):
         fout.write(f'PID: {PID}\n')
         fout.write(f'PPASS: {PPASS}')
         fout.close()
-        await ctx.send("File Saved!")
+        await ctx.send("Config File Saved!")
     except FileNotFoundError:
         await ctx.send("MAID ERROR: CONFIG FILE SAVE ERROR")
 
@@ -463,7 +463,13 @@ async def delGuild(ctx):
         await ctx.send(f'{ctx.guild.name} has been deleted!')
     else:
         await ctx.send(f'MAID ERROR: GUILD IS NOT ON RECORD')
-        
+
+@maid.command(brief = "***Private Feature***")
+async def delete(ctx, messageID: int):
+    message = await ctx.channel.fetch_message(messageID)
+    await message.delete()
+    await ctx.send("Message deleted!")
+
 def loadSet():
     global ENGuilds
     global CNGuilds
