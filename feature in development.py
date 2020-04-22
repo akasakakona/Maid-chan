@@ -244,10 +244,6 @@ async def queue(ctx, url: str):
     elif(ctx.guild.id in CNGuilds):
         await ctx.send(f"已经为{ctx.message.author.name}様将《{str(q_num)}》加入了歌单中!")
 
-@maid.command()#For debugging purposes
-async def ping(ctx):
-    await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
-
 @maid.command(brief = "***Private Feature***")
 async def saveSet(ctx):
     try:
@@ -302,7 +298,11 @@ async def setGuild(ctx, gtype:str):
         await ctx.send(f'{ctx.guild.name}\'s language has been set to English!')
     else:
         await ctx.send("MAID ERROR: IMPROPER USAGE")
-        
+
+@maid.command()#For debugging purposes
+async def ping(ctx):
+    await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
+
 def loadSet():
     global ENGuilds
     global CNGuilds
