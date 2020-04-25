@@ -470,7 +470,7 @@ async def delete(ctx, messageID: int):
     await message.delete()
     await ctx.send("Message deleted!")
 
-maid.command()
+@maid.command()
 async def say(ctx, language:str):
     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
