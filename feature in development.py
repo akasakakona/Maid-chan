@@ -8,6 +8,7 @@ import shutil
 import pixivpy3
 import time
 from pixivpy3 import *
+from gtts import gTTS
 
 TOKEN = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱', "！"))
@@ -302,6 +303,35 @@ async def setGuild(ctx, gtype:str):
 @maid.command()#For debugging purposes
 async def ping(ctx):
     await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
+
+@maid.command()
+async def say(ctx, language:str):
+    if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
+        channel = ctx.message.author.voice.channel#get what channel he is in
+        voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
+        if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
+            await voice.move_to(channel)#move to the channel where the author is
+        else:
+            voice = await channel.connect()#or else, connect to the channel directly
+    else:
+        if(ctx.message.guild.id in ENGuilds):
+            await ctx.send(f"{ctx.author.mention} is in the voice channel... I\'m lonely...")
+        elif(ctx.message.guild.id in CNGuilds):
+            await ctx.send(f"{ctx.author.mention}不在语音频道里欸...好寂寞...")
+            return
+    if(language == 'cn'):
+        language = 'zh-cn'
+    elif(language == 'jp'):
+        language = 'ja'
+    elif(language == 'dc' or language == 'fuckoff'):
+        await voice.disconnect()
+        return
+    txt = ctx.message.content[8:]
+    voiceObj = gTTS(text = txt, lang = language, slow = False)
+    voiceObj.save("tts.mp3")
+    voice.play(discord.FFmpegPCMAudio("tts.mp3"))
+    voice.source = discord.PCMVolumeTransformer(voice.source)
+    voice.source.volume = MUSIC_VOLUME
 
 def loadSet():
     global ENGuilds
