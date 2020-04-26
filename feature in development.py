@@ -315,10 +315,10 @@ async def say(ctx, language:str):
             voice = await channel.connect()#or else, connect to the channel directly
     else:
         if(ctx.message.guild.id in ENGuilds):
-            await ctx.send(f"{ctx.author.mention} is in the voice channel... I\'m lonely...")
+            await ctx.send(f"{ctx.author.mention} is not in the voice channel... I\'m lonely...")
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"{ctx.author.mention}不在语音频道里欸...好寂寞...")
-            return
+        return
     if(language == 'cn'):
         language = 'zh-cn'
     elif(language == 'jp'):
