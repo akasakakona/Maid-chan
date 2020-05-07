@@ -9,6 +9,7 @@ import pixivpy3
 from pixivpy3 import *
 import time
 from gtts import gTTS
+import subprocess
 
 random.seed(time.time())
 
@@ -198,15 +199,6 @@ async def remove(ctx):
     else:
         print('Role not found!')
 
-def leave(error):#Inserts coroutine into an async function, for play()
-    global voice
-    coro = voice.disconnect()
-    fut = asyncio.run_coroutine_threadsafe(coro, maid.loop)
-    try:
-        fut.result()
-    except:
-        pass
-
 MUSIC_VOLUME = 0.0
 @maid.command(brief = '***FEATURE IN BETA*** Play music. Usage: !play [YouTube url]')
 async def play(ctx,url: str):
@@ -217,54 +209,50 @@ async def play(ctx,url: str):
     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
-        if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
-            await voice.move_to(channel)#move to the channel where the author is
-        else:
-            voice = await channel.connect()#or else, connect to the channel directly
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
+        elif(ctx.guild.id in CNGuilds):
+            await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
     else:
         if(ctx.message.guild.id in ENGuilds):
             await ctx.send("Nobody is in the voice channel... I\'m lonely...")
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send("没人在语音频道里欸...好寂寞...")
             return
+    
+    youtube_dl_opts = {}
 
-    songPresent = os.path.isfile("song.mp3")#if a file called "song.mp3" presents, it will be true
-    try:
-        if(songPresent):#if the file is there
-            os.remove("song.mp3")#try to delete it
-            print("Old song file removed")
-    except:
-        print("File removal failed. Access denied because it is still playing")#if can't remove because it is playing, output this
-        if(ctx.message.guild.id in ENGuilds):
-            await ctx.send("ERROR: MUSIC IS PLAYING")
-            return
+    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
+    with youtube_dl.YoutubeDL(youtube_dl_opts) as ydl:
+        info_dict = ydl.extract_info(url, download=False)
+        name = info_dict.get('title', None)
+        duration = info_dict.get('duration', None)
 
-    youtube_dlConfig = {#Configuring youtube_dl
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+    for file in os.listdir("./"):
+        if(file.startswith(name)):
+            tempArr = file.split('.')
+            fileformat = tempArr[len(tempArr) - 1]
+            break
 
-    with youtube_dl.YoutubeDL(youtube_dlConfig) as ydl:#shortening youtube_dl.YoutubeDL(youtube_dlConfig) into ydl
-        print("Downloading audio now.\n")
-        ydl.download([url])#start downloading the song
-    for file in os.listdir("./"): #change name of the file to "song.mp3" so it can be found and deleted later
-        if(file.endswith(".mp3")):
-            name = file
-            os.rename(file, "song.mp3")
-            print("Renaming the file...\n")
+    filename = f"{name}.{fileformat}"
+    audioSouce = discord.FFmpegPCMAudio(filename)
+    
+    if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
+        await voice.move_to(channel)#move to the channel where the author is
+    else:
+        voice = await channel.connect()#or else, connect to the channel directly
 
-    voice.play(discord.FFmpegPCMAudio("song.mp3"), after=leave)#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
+    voice.play(audioSouce)#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
     voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
     voice.source.volume = MUSIC_VOLUME
 
     if(ctx.message.guild.id in ENGuilds):
-        await ctx.send(f"Playing \"{name[:-16]}\" for you right now! Master {ctx.message.author.name}!")
+        await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
     elif(ctx.message.guild.id in CNGuilds):
-        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name[:-16]}》！")#notify user the song started playing
+        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
+    await asyncio.sleep(duration)
+    os.remove(filename)
+    await voice.disconnect()
 
 @maid.command(brief = 'Pause the music.')
 async def pause(ctx):
