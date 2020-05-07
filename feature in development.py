@@ -9,6 +9,7 @@ import pixivpy3
 import time
 from pixivpy3 import *
 from gtts import gTTS
+import subprocess
 
 TOKEN = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱', "！"))
@@ -52,42 +53,7 @@ MUSIC_VOLUME = 0.0
 @maid.command()
 async def play(ctx,url: str):
     def check_queue():
-        queue_infile = os.path.isdir("./Queue")
-        if(queue_infile):
-            DIR = os.path.abspath(os.path.realpath("Queue"))
-            length = len(os.listdir(DIR))
-            queueLeft = length - 1
-            try:
-                first_file = os.listdir(DIR)[0]
-            except:
-                print("No more queued song(s)\n")
-                queues.clear()
-                return
-            main_location = os.path.dirname(os.path.realpath(__file__))
-            song_path = os.path.abspath(os.path.realpath("Queue") + "\\" + first_file)
-            if(length != 0):
-                print("Song done, playing next queued\n")
-                print(f"Songs still in queue: {queueLeft}")
-                song_there = os.path.isfile("song.mp3")
-                if(song_there):
-                    os.remove("song.mp3")
-                shutil.move(song_path, main_location)
-                for file in os.listdir("./") :
-                    if(file.endswith(".mp3")):
-                        os.rename(file, "song.mp3")
-
-                voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: check_queue())#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
-                voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
-                voice.source.volume = 0.7#0.7 is 70%, might make a function that make volume adjustable later
-
-            else:
-                queue.clear()
-                return
-        else:
-            queue.clear()
-            print("The queue is empty.")
-            voice.disconnect()
-
+        os.remove("song.mp3")
 
     global voice
     if(url.find("youtu.be/") != -1):
@@ -95,10 +61,10 @@ async def play(ctx,url: str):
     if(ctx.message.author.voice != None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
-        if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
-            await voice.move_to(channel)#move to the channel where the author is
-        else:
-            voice = await channel.connect()#or else, connect to the channel directly
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
+        elif(ctx.guild.id in CNGuilds):
+            await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
     else:
         if(ctx.guild.id in ENGuilds):
             await ctx.send("Nobody is in the voice channel... I\'m lonely...")
@@ -106,55 +72,40 @@ async def play(ctx,url: str):
             await ctx.send("没人在语音频道里欸...好寂寞...")
         return
 
-    songPresent = os.path.isfile("song.mp3")#if a file called "song.mp3" presents, it will be true
-    try:
-        if(songPresent):#if the file is there
-            os.remove("song.mp3")#try to delete it
-            queue.clear()
-            print("Old song file removed")
-    except:
-        print("File removal failed. Access denied because it is still playing")#if can't remove because it is playing, output this
-        if(ctx.message.guild.id in ENGuilds):
-            await ctx.send("ERROR: MUSIC IS PLAYING")
-            return
+    youtube_dl_opts = {}
 
+    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
+    with youtube_dl.YoutubeDL(youtube_dl_opts) as ydl:
+        info_dict = ydl.extract_info(url, download=False)
+        name = info_dict.get('title', None)
+        duration = info_dict.get('duration', None)
 
-    queue_infile = os.path.isdir("./Queue")
-    try:
-        Queue_folder = "./Queue"
-        if(queue_infile is True):
-            print("Removed old Queue Folder")
-            shutil.rmtree(Queue_folder)
-    except:
-        print("No old queue folder")
+    for file in os.listdir("./"):
+        if(file.startswith(name)):
+            tempArr = file.split('.')
+            fileformat = tempArr[len(tempArr) - 1]
+            break
 
-    youtube_dlConfig = {#Configuring youtube_dl
-        'format': 'bestaudio/best',
-        'quiet': True,
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+    filename = f"{name}.{fileformat}"
+    audioSouce = discord.FFmpegPCMAudio(filename)
 
-    with youtube_dl.YoutubeDL(youtube_dlConfig) as ydl:#shortening youtube_dl.YoutubeDL(youtube_dlConfig) into ydl
-        print("Downloading audio now.\n")
-        ydl.download([url])#start downloading the song
-    for file in os.listdir("./"): #change name of the file to "song.mp3" so it can be found and deleted later
-        if(file.endswith(".mp3")):
-            name = file
-            os.rename(file, "song.mp3")
-            print("Renaming the file...\n")
+    if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
+        await voice.move_to(channel)#move to the channel where the author is
+    else:
+        voice = await channel.connect()#or else, connect to the channel directly
 
-    voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: check_queue())#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
+    voice.play(audioSouce)#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
     voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
     voice.source.volume = MUSIC_VOLUME#0.7 is 70%, might make a function that make volume adjustable later
 
     if(ctx.message.guild.id in ENGuilds):
-        await ctx.send(f"Playing \"{name[:-16]}\" for you right now! Master {ctx.message.author.name}!")
+        await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
     elif(ctx.message.guild.id in CNGuilds):
-        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name[:-16]}》！")#notify user the song started playing
+        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
+    await asyncio.sleep(duration)
+    os.remove(filename)
+    await voice.disconnect()
+    
 
 @maid.command()
 async def pause(ctx):
@@ -225,20 +176,7 @@ async def queue(ctx, url: str):
 
     queue_path = os.path.abspath(os.path.realpath("Queue") + f"\song{q_num}.%(ext)s")
 
-    youtube_dlConfig = {#Configuring youtube_dl
-        'format': 'bestaudio/best',
-        'quiet': True,
-        'outtmpl': queue_path,
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
-
-    with youtube_dl.YoutubeDL(youtube_dlConfig) as ydl:#shortening youtube_dl.YoutubeDL(youtube_dlConfig) into ydl
-        print("Downloading audio now.\n")
-        ydl.download([url])#start downloading the song
+    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
 
     if(ctx.guild.id in ENGuilds):
         await ctx.send(f"I have added the song \"{str(q_num)}\" to the queue for you, Master {ctx.message.author.name}!")
@@ -303,35 +241,6 @@ async def setGuild(ctx, gtype:str):
 @maid.command()#For debugging purposes
 async def ping(ctx):
     await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
-
-@maid.command()
-async def say(ctx, language:str):
-    if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
-        channel = ctx.message.author.voice.channel#get what channel he is in
-        voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
-        if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
-            await voice.move_to(channel)#move to the channel where the author is
-        else:
-            voice = await channel.connect()#or else, connect to the channel directly
-    else:
-        if(ctx.message.guild.id in ENGuilds):
-            await ctx.send(f"{ctx.author.mention} is not in the voice channel... I\'m lonely...")
-        elif(ctx.message.guild.id in CNGuilds):
-            await ctx.send(f"{ctx.author.mention}不在语音频道里欸...好寂寞...")
-        return
-    if(language == 'cn'):
-        language = 'zh-cn'
-    elif(language == 'jp'):
-        language = 'ja'
-    elif(language == 'dc' or language == 'fuckoff'):
-        await voice.disconnect()
-        return
-    txt = ctx.message.content[8:]
-    voiceObj = gTTS(text = txt, lang = language, slow = False)
-    voiceObj.save("tts.mp3")
-    voice.play(discord.FFmpegPCMAudio("tts.mp3"))
-    voice.source = discord.PCMVolumeTransformer(voice.source)
-    voice.source.volume = MUSIC_VOLUME
 
 def loadSet():
     global ENGuilds
