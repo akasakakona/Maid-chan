@@ -8,7 +8,7 @@ import shutil
 import pixivpy3
 import time
 from pixivpy3 import *
-from gtts import gTTS
+import subprocess
 
 TOKEN = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱', "！"))
@@ -49,12 +49,14 @@ async def on_message(message):
         await maid.process_commands(message)
 
 MUSIC_VOLUME = 0.0
+LOOP_SINGLE = False
+LOOP_ALL = False
+SHUFFLE = False
 @maid.command()
 async def play(ctx,url: str):
 
     global voice
-    if(url.find("youtu.be/") != -1):
-        url.replace("youtu.be/", "www.youtube.com/watch?v=")
+    musicList = []
     if(ctx.message.author.voice != None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
@@ -62,6 +64,7 @@ async def play(ctx,url: str):
             await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
         elif(ctx.guild.id in CNGuilds):
             await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
+            musicList.append(url)
     else:
         if(ctx.guild.id in ENGuilds):
             await ctx.send("Nobody is in the voice channel... I\'m lonely...")
@@ -69,41 +72,55 @@ async def play(ctx,url: str):
             await ctx.send("没人在语音频道里欸...好寂寞...")
         return
 
-    youtube_dl_opts = {}
+    while(len(musicList) != 0):
+        try:
+            os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {musicList[0]}")
+            print("video downloaded!")
+            name = subprocess.check_output(f"youtube-dl --get-title {musicList[0]}", shell = True).decode().rstrip()
+            duration = subprocess.check_output(f"youtube-dl --get-duration {musicList[0]}", shell = True).decode()
+            thumbnail = subprocess.check_output(f"youtube-dl --get-thumbnail {musicList[0]}", shell = True).decode()
+            description = subprocess.check_output(f"youtube-dl --get-description {musicList[0]}", shell = True).decode()
+        except:
+            await ctx.send("MAID ERROR: VIDEO EXTRACTION FAILED! PLEASE TRY AGAIN!")
+            return
 
-    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
-    with youtube_dl.YoutubeDL(youtube_dl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-        name = info_dict.get('title', None)
-        duration = info_dict.get('duration', None)
+        for file in os.listdir("./"):
+            if(file.startswith(name)):
+                tempArr = file.split('.')
+                fileformat = tempArr[len(tempArr) - 1]
+                print(fileformat)
+                break
+        
+        filename = f"{name}.{fileformat}"
+        audioSouce = discord.FFmpegPCMAudio(filename)
 
-    for file in os.listdir("./"):
-        if(file.startswith(name)):
-            tempArr = file.split('.')
-            fileformat = tempArr[len(tempArr) - 1]
-            break
+        if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
+            await voice.move_to(channel)#move to the channel where the author is
+        else:
+            voice = await channel.connect()#or else, connect to the channel directly
 
-    filename = f"{name}.{fileformat}"
-    audioSouce = discord.FFmpegPCMAudio(filename)
+        voice.play(audioSouce)#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
+        voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
+        voice.source.volume = MUSIC_VOLUME#0.7 is 70%, might make a function that make volume adjustable later
 
-    if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
-        await voice.move_to(channel)#move to the channel where the author is
-    else:
-        voice = await channel.connect()#or else, connect to the channel directly
+        embed = discord.Embed(title = name, description = f"{description}\n```Duration: {duration}```", colour = discord.Color.magenta(), url = url)
+        embed.set_footer(text = ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+        embed.set_thumbnail(url = thumbnail)
+        if(ctx.message.guild.id in ENGuilds):
+            await ctx.send(content = f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!", embed = embed)
+        elif(ctx.message.guild.id in CNGuilds):
+            await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{name}》！", embed = embed)#notify user the song started playing
+        while(voice.is_playing() or voice.is_paused()):
+            await asyncio.sleep(1)
+        os.remove(filename)
+        if(len(musicList) == 0):
+            await voice.disconnect()
+        elif(len(musicList) > 0 and not LOOP_ALL and not LOOP_SINGLE):
+            musicList.pop(0)
+        elif(len(musicList) > 0 and LOOP_ALL and not LOOP_SINGLE):
 
-    voice.play(audioSouce)#will leave the channel AFTER a song finished playing. This evokes def leave(error) above
-    voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
-    voice.source.volume = MUSIC_VOLUME#0.7 is 70%, might make a function that make volume adjustable later
-
-    if(ctx.message.guild.id in ENGuilds):
-        await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
-    elif(ctx.message.guild.id in CNGuilds):
-        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
-    while(voice.is_playing() or voice.is_paused()):
-        await asyncio.sleep(1)
-    os.remove(filename)
-    await voice.disconnect()
     
+
 
 @maid.command()
 async def pause(ctx):
