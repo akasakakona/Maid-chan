@@ -9,6 +9,7 @@ import pixivpy3
 from pixivpy3 import *
 import time
 from gtts import gTTS
+import subprocess
 
 random.seed(time.time())
 
@@ -202,9 +203,6 @@ MUSIC_VOLUME = 0.0
 @maid.command(brief = '***FEATURE IN BETA*** Play music. Usage: !play [YouTube url]')
 async def play(ctx,url: str):
     global voice
-    global MUSIC_VOLUME
-    if(url.find("youtu.be/") != -1):
-        url.replace("youtu.be/", "www.youtube.com/watch?v=")
     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
@@ -219,18 +217,22 @@ async def play(ctx,url: str):
             await ctx.send("没人在语音频道里欸...好寂寞...")
             return
     
-    youtube_dl_opts = {}
-
-    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
-    with youtube_dl.YoutubeDL(youtube_dl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-        name = info_dict.get('title', None)
-        duration = info_dict.get('duration', None)
+    try:
+        os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
+        print("video downloaded!")
+        name = subprocess.check_output(f"youtube-dl --get-title {url}", shell = True).decode().rstrip()
+        duration = subprocess.check_output(f"youtube-dl --get-duration {url}", shell = True).decode()
+        thumbnail = subprocess.check_output(f"youtube-dl --get-thumbnail {url}", shell = True).decode()
+        description = subprocess.check_output(f"youtube-dl --get-description {url}", shell = True).decode()
+    except:
+        await ctx.send("MAID ERROR: VIDEO EXTRACTION FAILED! PLEASE TRY AGAIN!")
+        return
 
     for file in os.listdir("./"):
         if(file.startswith(name)):
             tempArr = file.split('.')
             fileformat = tempArr[len(tempArr) - 1]
+            print(fileformat)
             break
 
     filename = f"{name}.{fileformat}"
@@ -245,10 +247,13 @@ async def play(ctx,url: str):
     voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
     voice.source.volume = MUSIC_VOLUME
 
+    embed = discord.Embed(title = name, description = f"{description}\n```Duration: {duration}```", colour = discord.Color.magenta(), url = url)
+    embed.set_footer(text = ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+    embed.set_thumbnail(url = thumbnail)
     if(ctx.message.guild.id in ENGuilds):
-        await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
+        await ctx.send(content = f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!", embed = embed)
     elif(ctx.message.guild.id in CNGuilds):
-        await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
+        await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{name}》！", embed = embed)#notify user the song started playing
     while(voice.is_playing() or voice.is_paused()):
         await asyncio.sleep(1)
     os.remove(filename)
@@ -357,8 +362,7 @@ async def picSearch(ctx, title: str):
         if(imagePresent):
             os.remove(f'illust.jpg')
         pixivAPI.download(illust.image_urls.large, fname=f'illust.jpg')
-        await ctx.send(f"Title: {illust.title}")
-        await ctx.send(file=discord.File(f'illust.jpg'))
+        await ctx.send(content = f"Title: {illust.title}", file=discord.File(f'illust.jpg'))
     else:
         await ctx.send("Image can\'t be found! 无法找到图片！")
 
