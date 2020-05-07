@@ -9,7 +9,6 @@ import pixivpy3
 from pixivpy3 import *
 import time
 from gtts import gTTS
-import subprocess
 
 random.seed(time.time())
 
@@ -250,7 +249,8 @@ async def play(ctx,url: str):
         await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
     elif(ctx.message.guild.id in CNGuilds):
         await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
-    await asyncio.sleep(duration)
+    while(voice.is_playing() or voice.is_paused()):
+        await asyncio.sleep(1)
     os.remove(filename)
     await voice.disconnect()
 
@@ -263,7 +263,6 @@ async def pause(ctx):
             await ctx.send(f"I have paused the music for you, Master {ctx.message.author.name}!THE WORLD!!Time, STOP!!!")
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"已经为{ctx.message.author.name}様暂停了音乐！！THE WORLD！！時よ止まれ！！")
-        await voice.disconnect()
     else:
         if(ctx.message.guild.id in ENGuilds):
             await ctx.send("MAID ERROR: MUSIC IS NOT PLAYING!")
@@ -295,6 +294,7 @@ async def stop(ctx):#PLANNING TO REPLACE STOP W/ SKIP. THAT WAY I CAN USE KING C
             await ctx.send(f"I have stopped the music for you, Master {ctx.message.author.name}!THE WORLD!!Time, STOP!!!")
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"已经为{ctx.message.author.name}様停止了音乐。THE WORLD！！時よ止まれ！！")
+        await voice.disconnect()
     else:
         print("MAID ERROR: MUSIC IS NOT PLAYING")
         if(ctx.message.guild.id in ENGuilds):
