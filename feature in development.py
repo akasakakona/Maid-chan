@@ -9,7 +9,6 @@ import pixivpy3
 import time
 from pixivpy3 import *
 from gtts import gTTS
-import subprocess
 
 TOKEN = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱', "！"))
@@ -52,8 +51,6 @@ async def on_message(message):
 MUSIC_VOLUME = 0.0
 @maid.command()
 async def play(ctx,url: str):
-    def check_queue():
-        os.remove("song.mp3")
 
     global voice
     if(url.find("youtu.be/") != -1):
@@ -102,7 +99,8 @@ async def play(ctx,url: str):
         await ctx.send(f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!")
     elif(ctx.message.guild.id in CNGuilds):
         await ctx.send(f"正在播放{ctx.message.author.name}様点播的《{name}》！")#notify user the song started playing
-    await asyncio.sleep(duration)
+    while(voice.is_playing() or voice.is_paused()):
+        await asyncio.sleep(1)
     os.remove(filename)
     await voice.disconnect()
     
@@ -126,7 +124,7 @@ async def pause(ctx):
 async def resume(ctx):
     voice = ctx.guild.voice_client
     if(voice and voice.is_paused()):
-        voice.pause()
+        voice.resume()
         if(ctx.message.guild.id in ENGuilds):
             await ctx.send(f"I have resumed the music for you, Master {ctx.message.author.name}!...And so, time flows again.")
         elif(ctx.message.guild.id in CNGuilds):
