@@ -1,4 +1,9 @@
 # Maid-chan Introuction
+<a href = "https://discord.gg/NU5NzzR">
+    <img src="https://i.imgur.com/f5uq0NV.png" alt="Join Discord" style="width:42px;height:42px;" class="center" >
+</a>
+
+
 She is based on Python, using Discord.py (Rewrite).
 
 She is being updated slowly.
