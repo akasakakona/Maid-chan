@@ -41,7 +41,7 @@ BUT she is getting better and better everyday!
 * `!setGuild [cn/en]` to set language preference for gthe current server.
 * `!delGuild` to clear the guild's language preference.
 * `!delete [messageID]` to delete a message by its ID **(NOTE: Permission needed!)**.
-* `!say [a language supported by gTTS] [text]` to make the bot read the text in the language selected.
+* `!say [a language supported by gTTS] [text]` to have the bot pronounce the text in voice channel using your preferred language **(NOTE: You can find the list of languages supported by gTTS here: https://pypi.org/project/gTTS/1.2.1/)**
 * `!shutdown` to safely shut down the bot and save its settings. **(NOTE: Remember to change the ID so it reacts to you!)**.
 
 # Future Planning
