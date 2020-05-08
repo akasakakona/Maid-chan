@@ -1,7 +1,10 @@
 # Maid-chan Introuction
 She is based on Python, using Discord.py (Rewrite).
+
 She is being updated slowly.
+
 BUT she is getting better and better everyday!
+
 
 # Dependencies
 - discord.py[voice].
