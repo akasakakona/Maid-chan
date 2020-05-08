@@ -44,9 +44,9 @@ BUT she is getting better and better everyday!
 * `!picsearch [keyword]` or `!色图 [keyword]` to search for pictures on Pixiv.
 * `!setGuild [cn/en]` to set language preference for gthe current server.
 * `!delGuild` to clear the guild's language preference.
-* `!delete [messageID]` to delete a message by its ID (NOTE: Permission needed!).
+* `!delete [messageID]` to delete a message by its ID **(NOTE: Permission needed!)**.
 * `!say [a language supported by gTTS] [text]` to make the bot read the text in the language selected.
-* `!shutdown` to safely shut down the bot and save its settings. (NOTE: Remember to change the ID so it reacts to you!).
+* `!shutdown` to safely shut down the bot and save its settings. **(NOTE: Remember to change the ID so it reacts to you!)**.
 ## Future Planning
 * Finish `!assign` command.
 * Finish `!removeRole` command.
