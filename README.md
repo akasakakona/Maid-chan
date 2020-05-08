@@ -16,11 +16,13 @@ Newest Update
 -------------
 
 Current Version
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
-1.1.0.
+1.1.0
+
 Features
-~~~~~~~~
+~~~~~~~~~~~~~~~~~~
+
  -React when new members join the server.
  -Some fun little reaction to messages.
  -Assign/Remove roles based to the reaction added to a certain message.
