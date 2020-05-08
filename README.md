@@ -12,6 +12,7 @@ Dependencies
 - pixivpy3.
 - gTTS.
 
+<Pre>
 # UPDATE LOG
 
 -08/19/2019 ---Progress Report & Future Planning---
