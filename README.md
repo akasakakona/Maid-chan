@@ -19,12 +19,10 @@ BUT she is getting better and better everyday!
 - pixivpy3.
 - gTTS.
 
-# Newest Update
-
-## Current Version
+# Current Version
 1.1.0
 
-## Features
+# Features
 * React when new members join the server.
 * Some fun little reaction to messages.
 * Assign/Remove roles based to the reaction added to a certain message.
@@ -45,12 +43,13 @@ BUT she is getting better and better everyday!
 * `!delete [messageID]` to delete a message by its ID **(NOTE: Permission needed!)**.
 * `!say [a language supported by gTTS] [text]` to make the bot read the text in the language selected.
 * `!shutdown` to safely shut down the bot and save its settings. **(NOTE: Remember to change the ID so it reacts to you!)**.
-## Future Planning
+
+# Future Planning
 * Finish `!assign` command.
 * Finish `!removeRole` command.
 * Debug and optimize `!play` and music related command.
 
-# UPDATE LOG
+# Update Log
 ```
 -08/19/2019 ---Progress Report & Future Planning---
     @Current Version:
