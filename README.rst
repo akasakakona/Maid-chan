@@ -42,6 +42,7 @@ Features
 -`!delete [messageID]` to delete a message by its ID (NOTE: Permission needed!).
 -`!say [a language supported by gTTS] [text]` to make the bot read the text in the language selected.
 -`!shutdown` to safely shut down the bot and save its settings. (NOTE: Remember to change the ID so it reacts to you!).
+
 Future Planning
 ~~~~~~~~~~~~~~~
 -Finish `!assign` command.
@@ -50,7 +51,7 @@ Future Planning
 
 UPDATE LOG
 ==========
-::
+
 -08/19/2019 Progress Report & Future Planning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     @Current Version:
