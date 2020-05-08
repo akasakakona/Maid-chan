@@ -1,15 +1,17 @@
-**Maid-chan Introuction**
+Maid-chan Introuction
+=====================
 She is based on Python, using Discord.py (Rewrite).
 She is being updated slowly.
 BUT she is getting better and better everyday!
 
-**Dependencies**
--discord.py[voice]
--youtube-dl
--pixivpy3
--gTTS
+Dependencies
+------------
 
-<pre>
+- discord.py[voice].
+- youtube-dl.
+- pixivpy3.
+- gTTS.
+
 # UPDATE LOG
 
 -08/19/2019 ---Progress Report & Future Planning---
