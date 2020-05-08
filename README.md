@@ -5,6 +5,8 @@ She is being updated slowly.
 
 BUT she is getting better and better everyday!
 
+![alt text](https://www.akasakakona.com/img/maid_chan.jpg "Maid-chan")
+
 
 # Dependencies
 - discord.py[voice].
