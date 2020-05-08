@@ -288,6 +288,21 @@ async def play(ctx,url: str):
             pass
 
 @maid.command()
+async def skip(ctx):
+    voice = ctx.guild.voice_client
+    if(voice and voice.is_playing):
+        voice.stop()
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send("Current Song Skipped!")
+        else:
+            await ctx.send("已跳过当前歌曲！")
+    else:
+        if(ctx.message.guild.id in ENGuilds):
+            await ctx.send("MAID ERROR: MUSIC IS NOT PLAYING!")
+        elif(ctx.message.guild.id in CNGuilds):
+            await ctx.send("MAID ERROR: 暂无音乐播放中！")
+
+@maid.command()
 async def loop(ctx, state: str):
     global LOOP_ALL
     global LOOP_SINGLE
@@ -371,7 +386,6 @@ async def resume(ctx):
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"已经为{ctx.message.author.name}様重启了音乐。然后，时间开始流动。")
     else:
-        print("MAID ERROR: MUSIC IS NOT PLAYING")
         if(ctx.message.guild.id in ENGuilds):
             await ctx.send("MAID ERROR: MUSIC IS NOT PAUSED!")
         elif(ctx.message.guild.id in CNGuilds):
