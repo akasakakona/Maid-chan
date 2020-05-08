@@ -36,7 +36,8 @@ BUT she is getting better and better everyday!
 * `!pause` for pausing music.
 * `!resume` for resuming music.
 * `!stop` for stopping music and clearing playlist
-* `!setVol [0 - 1]` for setting volume of the bot when playing music.
+* `!RR` for playing Russia Roulette
+* `!setVol [0-1]` to set volume for the bot when playing music. 0.1 is 10%, 0.2 is 20%... and so on **(NOTE: One place decimal ONLY)**.
 * `!picsearch [keyword]` or `!色图 [keyword]` to search for pictures on Pixiv.
 * `!setGuild [cn/en]` to set language preference for gthe current server.
 * `!delGuild` to clear the guild's language preference.
