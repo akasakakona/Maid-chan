@@ -51,12 +51,13 @@ async def on_message(message):
 MUSIC_VOLUME = 0.0
 LOOP_SINGLE = False
 LOOP_ALL = False
-SHUFFLE = False
+musicList = []
+currIndex = 0
 @maid.command()
 async def play(ctx,url: str):
-
     global voice
-    musicList = []
+    global musicList
+    global currIndex
     if(ctx.message.author.voice != None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
@@ -64,7 +65,9 @@ async def play(ctx,url: str):
             await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
         elif(ctx.guild.id in CNGuilds):
             await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
-            musicList.append(url)
+        musicList.append(url)
+        if(voice is not None):
+            return
     else:
         if(ctx.guild.id in ENGuilds):
             await ctx.send("Nobody is in the voice channel... I\'m lonely...")
@@ -74,21 +77,20 @@ async def play(ctx,url: str):
 
     while(len(musicList) != 0):
         try:
-            os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {musicList[0]}")
-            print("video downloaded!")
-            name = subprocess.check_output(f"youtube-dl --get-title {musicList[0]}", shell = True).decode().rstrip()
-            duration = subprocess.check_output(f"youtube-dl --get-duration {musicList[0]}", shell = True).decode()
-            thumbnail = subprocess.check_output(f"youtube-dl --get-thumbnail {musicList[0]}", shell = True).decode()
-            description = subprocess.check_output(f"youtube-dl --get-description {musicList[0]}", shell = True).decode()
+            os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {musicList[currIndex]}")
+            name = subprocess.check_output(f"youtube-dl --get-title {musicList[currIndex]}", shell = True).decode().rstrip()
+            duration = subprocess.check_output(f"youtube-dl --get-duration {musicList[currIndex]}", shell = True).decode()
+            thumbnail = subprocess.check_output(f"youtube-dl --get-thumbnail {musicList[currIndex]}", shell = True).decode()
+            description = subprocess.check_output(f"youtube-dl --get-description {musicList[currIndex]}", shell = True).decode()
         except:
-            await ctx.send("MAID ERROR: VIDEO EXTRACTION FAILED! PLEASE TRY AGAIN!")
+            await ctx.send(f"MAID ERROR: VIDEO EXTRACTION FAILED FOR URL: {musicList[currIndex]} ! PLEASE TRY AGAIN!")
             return
 
+        await asyncio.sleep(3) #need to wait for youtube-dl to merge fragment files before preceeding
         for file in os.listdir("./"):
             if(file.startswith(name)):
                 tempArr = file.split('.')
                 fileformat = tempArr[len(tempArr) - 1]
-                print(fileformat)
                 break
         
         filename = f"{name}.{fileformat}"
@@ -112,15 +114,85 @@ async def play(ctx,url: str):
             await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{name}》！", embed = embed)#notify user the song started playing
         while(voice.is_playing() or voice.is_paused()):
             await asyncio.sleep(1)
-        os.remove(filename)
-        if(len(musicList) == 0):
-            await voice.disconnect()
-        elif(len(musicList) > 0 and not LOOP_ALL and not LOOP_SINGLE):
+        if(len(musicList) == 1 and not LOOP_ALL and not LOOP_SINGLE):
             musicList.pop(0)
-        elif(len(musicList) > 0 and LOOP_ALL and not LOOP_SINGLE):
-
+            os.remove(filename)
+            await voice.disconnect()
+        elif(currIndex == len(musicList) - 1 and LOOP_ALL):
+            currIndex = 0
+            os.remove(filename)
+        elif(len(musicList) > 1 and not LOOP_ALL and not LOOP_SINGLE):
+            if(currIndex == 0):
+                musicList.pop(0)
+            else:
+                for i in range(0, currIndex + 1):
+                    musicList.pop(i)
+            os.remove(filename)
+            currIndex = 0
+        elif(len(musicList) > 1 and LOOP_ALL and not LOOP_SINGLE):
+            currIndex += 1
+            os.remove(filename)
+        elif(len(musicList) > 1 and not LOOP_ALL and LOOP_SINGLE):
+            pass
     
+@maid.command()
+async def loop(ctx, state: str):
+    global LOOP_ALL
+    global LOOP_SINGLE
+    state = state.lower()
+    if(state == "all"):
+        if(LOOP_SINGLE):
+            LOOP_SINGLE = False
+        LOOP_ALL = True
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send("Loop all is on!")
+        else:
+            await ctx.send("开启全曲洗脑循环！")
+    elif(state == "single"):
+        if(LOOP_ALL):
+            LOOP_ALL = False
+        LOOP_SINGLE = True
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send("Loop single is on!")
+        else:
+            await ctx.send("开启单曲洗脑循环！")
+    elif(state == "off"):
+        LOOP_SINGLE = False
+        LOOP_ALL = False
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send("Loop is off!")
+        else:
+            await ctx.send("洗脑循环关闭！")
 
+@maid.command(aliases = ['list', 'ls'])
+async def playlist(ctx):
+    playlist = ""
+    i = 1
+    for url in musicList:
+        name = subprocess.check_output(f"youtube-dl --get-title {url}", shell = True).decode()
+        playlist += f"{i}. {name}\n"
+        i += 1
+    if(LOOP_ALL):
+        playlist += "```LOOP_ALL: ON\n"
+    else:
+        playlist += "```LOOP_ALL: OFF\n"
+    if(LOOP_SINGLE):
+        playlist += "LOOP_SINGLE: ON```"
+    else:
+        playlist += "LOOP_SINGLE: OFF```"
+    embed = discord.Embed(title = f"{ctx.guild.name}\'s Playlist", description = playlist, colour = discord.Color.blue())
+    embed.set_footer(text = ctx.guild.name, icon_url=ctx.guild.icon_url)
+    await ctx.send(embed = embed)
+
+@maid.command(aliases = ['del', 'd', 'remove'])
+async def delete(ctx, num: int):
+    global musicList
+    name = subprocess.check_output(f"youtube-dl --get-title {musicList[num - 1]}", shell = True).decode()
+    musicList.pop(num - 1)
+    if(ctx.guild.id in ENGuilds):
+        await ctx.send(f"\"{name}\" has been deleted for Master {ctx.author.name}!")
+    else:
+        await ctx.send(f"已经为{ctx.author.name}删除了《{name}》!")
 
 @maid.command()
 async def pause(ctx):
@@ -155,10 +227,15 @@ async def resume(ctx):
 
 @maid.command()
 async def stop(ctx):#PLANNING TO REPLACE STOP W/ SKIP. THAT WAY I CAN USE KING CRIMSON REFERENCE
+    global musicList
+    global currIndex
+    await loop(ctx, "off")
     voice = ctx.guild.voice_client
-    queues.clear()
     if(voice and voice.is_playing()):
         voice.stop()
+        for i in range(0, len(musicList)):
+            musicList.pop(0)
+        currIndex = 0
         if(ctx.message.guild.id in ENGuilds):
             await ctx.send(f"I have stopped the music for you, Master {ctx.message.author.name}!THE WORLD!!Time, STOP!!!")
         elif(ctx.message.guild.id in CNGuilds):
@@ -171,35 +248,7 @@ async def stop(ctx):#PLANNING TO REPLACE STOP W/ SKIP. THAT WAY I CAN USE KING C
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send("MAID ERROR: 暂无音乐播放中！")
 
-queues = {}
-
-@maid.command()
-async def queue(ctx, url: str):
-    queue_infile = os.path.isdir("./Queue")#check if there is a folder called Queue under the working directory
-    if(queue_infile is False):#if not
-        os.mkdir("Queue")#make a queue folder
-    DIR = os.path.abspath(os.path.realpath("Queue"))#Get absolute path of the file Queue
-    q_num = len(os.listdir(DIR))#count how many files(songs) are under  this directory
-    q_num += 1
-    add_queue = True
-    while(add_queue):
-        if(q_num in queues):#Count how many songs are present in queue
-            q_num += 1
-        else:
-            add_queue = False
-            queues[q_num] = q_num
-
-    queue_path = os.path.abspath(os.path.realpath("Queue") + f"\song{q_num}.%(ext)s")
-
-    os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {url}")
-
-    if(ctx.guild.id in ENGuilds):
-        await ctx.send(f"I have added the song \"{str(q_num)}\" to the queue for you, Master {ctx.message.author.name}!")
-    elif(ctx.guild.id in CNGuilds):
-        await ctx.send(f"已经为{ctx.message.author.name}様将《{str(q_num)}》加入了歌单中!")
-
-@maid.command(brief = "***Private Feature***")
-async def saveSet(ctx):
+def saveSet():
     try:
         fout = open("config1.txt", 'w')
         fout.write(f'token: {TOKEN}\n')
@@ -223,9 +272,9 @@ async def saveSet(ctx):
         fout.write(f'PID: {PID}\n')
         fout.write(f'PPASS: {PPASS}')
         fout.close()
-        await ctx.send("File Saved!")
+        return True
     except FileNotFoundError:
-        await ctx.send("MAID ERROR: CONFIG FILE SAVE ERROR")
+        return False
 
 @maid.command(brief = "***Private Feature***")
 async def setGuild(ctx, gtype:str):
@@ -256,6 +305,17 @@ async def setGuild(ctx, gtype:str):
 @maid.command()#For debugging purposes
 async def ping(ctx):
     await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
+
+@maid.command()
+async def shutdown(ctx):
+    if(ctx.author.id != 358838608779673600):
+        await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
+        return
+    if(saveSet()):
+        await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
+    else:
+        await ctx.send('MAID ERROR: SAVE SETTINGS ERROR... I\'m sorry AkasakaKona-Sama... (Q A Q)')
+    await maid.close()
 
 def loadSet():
     global ENGuilds
