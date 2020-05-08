@@ -195,6 +195,22 @@ async def delete(ctx, num: int):
     else:
         await ctx.send(f"已经为{ctx.author.name}删除了《{name}》!")
 
+
+@maid.command()
+async def skip(ctx):
+    voice = ctx.guild.voice_client
+    if(voice and voice.is_playing):
+        voice.stop()
+        if(ctx.guild.id in ENGuilds):
+            await ctx.send("Current Song Skipped!")
+        else:
+            await ctx.send("已跳过当前歌曲！")
+    else:
+        if(ctx.message.guild.id in ENGuilds):
+            await ctx.send("MAID ERROR: MUSIC IS NOT PLAYING!")
+        elif(ctx.message.guild.id in CNGuilds):
+            await ctx.send("MAID ERROR: 暂无音乐播放中！")
+
 @maid.command()
 async def pause(ctx):
     voice = ctx.guild.voice_client
