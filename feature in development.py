@@ -58,6 +58,8 @@ async def play(ctx,url: str):
     global voice
     global musicList
     global currIndex
+    if(url.find("youtu.be/") != -1):
+        url.replace("youtu.be/", "www.youtube.com/watch?v=")
     if(ctx.message.author.voice != None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
