@@ -229,7 +229,10 @@ async def resume(ctx):
 async def stop(ctx):#PLANNING TO REPLACE STOP W/ SKIP. THAT WAY I CAN USE KING CRIMSON REFERENCE
     global musicList
     global currIndex
-    await loop(ctx, "off")
+    global LOOP_SINGLE
+    global LOOP_ALL
+    LOOP_ALL = False
+    LOOP_SINGLE = False
     voice = ctx.guild.voice_client
     if(voice and voice.is_playing()):
         voice.stop()
