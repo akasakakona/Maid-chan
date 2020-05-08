@@ -1,5 +1,5 @@
 # Maid-chan Introuction
-<a href = "https://discord.gg/NU5NzzR">
+<a href = "https://discord.gg/6qKGErK">
     <img src="https://www.akasakakona.com/img/f5uq0NV.png" alt="Join Discord" style="width:42px;height:42px;" class="center" >
 </a>
 
