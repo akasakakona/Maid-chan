@@ -25,8 +25,6 @@ BUT she is getting better and better everyday!
 1.1.0
 
 ## Features
-
-* Unordered sub-list
 * React when new members join the server.
 * Some fun little reaction to messages.
 * Assign/Remove roles based to the reaction added to a certain message.
