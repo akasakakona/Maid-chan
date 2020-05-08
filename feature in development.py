@@ -84,7 +84,8 @@ async def play(ctx,url: str):
             description = subprocess.check_output(f"youtube-dl --get-description {musicList[currIndex]}", shell = True).decode()
         except:
             await ctx.send(f"MAID ERROR: VIDEO EXTRACTION FAILED FOR URL: {musicList[currIndex]} ! PLEASE TRY AGAIN!")
-            return
+            musicList.remove(musicList[currIndex])
+            continue
 
         await asyncio.sleep(3) #need to wait for youtube-dl to merge fragment files before preceeding
         for file in os.listdir("./"):
