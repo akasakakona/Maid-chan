@@ -8,7 +8,7 @@ She is based on Python, using Discord.py (Rewrite).
 
 She is being updated slowly.
 
-BUT she is getting better and better everyday!
+BUT she is getting better and better with every update!
 
 ![alt text](https://www.akasakakona.com/img/maid_chan.jpg "Maid-chan")
 
