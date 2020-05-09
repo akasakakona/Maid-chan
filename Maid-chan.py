@@ -17,9 +17,9 @@ random.seed(time.time())
 class Video:
     def __init__(self, title, description, thumbnail, duration, id):
         self.title = title
-        self.description = description[2:]
+        self.description = description
         self.thumbnail = thumbnail
-        self.duration = duration
+        self.duration = duration[2:]
         self.url = f"https://www.youtube.com/watch?v={id}"
 
 TOKEN = ""
