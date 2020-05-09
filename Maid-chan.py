@@ -9,11 +9,21 @@ import pixivpy3
 from pixivpy3 import *
 import time
 from gtts import gTTS
-import subprocess
+from googleapiclient.discovery import build
+import difflib
 
 random.seed(time.time())
 
+class Video:
+    def __init__(self, title, description, thumbnail, duration, id):
+        self.title = title
+        self.description = description
+        self.thumbnail = thumbnail
+        self.duration = duration
+        self.url = f"https://www.youtube.com/watch?v={id}"
+
 TOKEN = ""
+DEV_KEY = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱',"老婆","媳妇","小可爱","小宝贝", '！'))
 ENGuilds = []
 CNGuilds = []
@@ -209,8 +219,6 @@ async def play(ctx,url: str):
     global voice
     global musicList
     global currIndex
-    if(url.find("youtu.be/") != -1):
-        url.replace("youtu.be/", "www.youtube.com/watch?v=")
     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
@@ -218,7 +226,10 @@ async def play(ctx,url: str):
             await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
         elif(ctx.guild.id in CNGuilds):
             await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
-        musicList.append(url)
+        youtube = build("youtube", "v3", developerKey=DEV_KEY)
+        request = youtube.videos().list(part = "snippet,contentDetails", id = url[-11:])
+        result = request.execute()
+        musicList.append(Video(result["items"][0]["snippet"]["title"], result["items"][0]["snippet"]["description"], result["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result["items"][0]["contentDetails"]["duration"], url[-11:]))
         if(voice is not None):
             return
     else:
@@ -230,26 +241,17 @@ async def play(ctx,url: str):
     
     while(len(musicList) != 0):
         try:
-            os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {musicList[currIndex]}")
-            name = subprocess.check_output(f"youtube-dl --get-title {musicList[currIndex]}", shell = True).decode().rstrip()
-            duration = subprocess.check_output(f"youtube-dl --get-duration {musicList[currIndex]}", shell = True).decode()
-            thumbnail = subprocess.check_output(f"youtube-dl --get-thumbnail {musicList[currIndex]}", shell = True).decode()
-            description = subprocess.check_output(f"youtube-dl --get-description {musicList[currIndex]}", shell = True).decode()
+            os.system(f"youtube-dl -f bestaudio -o \"%(title)s.%(ext)s\" {musicList[currIndex].url}")
         except:
-            await ctx.send(f"MAID ERROR: VIDEO EXTRACTION FAILED FOR URL: {musicList[currIndex]} ! PLEASE TRY AGAIN!")
+            await ctx.send(f"MAID ERROR: VIDEO EXTRACTION FAILED FOR URL: {musicList[currIndex].url} ! PLEASE TRY AGAIN!")
             musicList.remove(musicList[currIndex])
             if(len(musicList) == 0):
                 break
             continue
 
         await asyncio.sleep(3) #need to wait for youtube-dl to merge fragment files before preceeding
-        for file in os.listdir("./"):
-            if(file.startswith(name)):
-                tempArr = file.split('.')
-                fileformat = tempArr[len(tempArr) - 1]
-                break
+        filename = difflib.get_close_matches(musicList[currIndex].title, os.listdir("./"), n=1)[0]
         
-        filename = f"{name}.{fileformat}"
         audioSouce = discord.FFmpegPCMAudio(filename)
 
         if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
@@ -261,13 +263,13 @@ async def play(ctx,url: str):
         voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
         voice.source.volume = MUSIC_VOLUME#0.7 is 70%, might make a function that make volume adjustable later
 
-        embed = discord.Embed(title = name, description = f"{description}\n```Duration: {duration}```", colour = discord.Color.magenta(), url = url)
+        embed = discord.Embed(title = musicList[currIndex].title, description = f"{musicList[currIndex].description}\n```Duration: {musicList[currIndex].duration}```", colour = discord.Color.magenta(), url = url)
         embed.set_footer(text = ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
-        embed.set_thumbnail(url = thumbnail)
+        embed.set_thumbnail(url = musicList[currIndex].thumbnail)
         if(ctx.message.guild.id in ENGuilds):
-            await ctx.send(content = f"Playing \"{name}\" for you right now! Master {ctx.message.author.name}!", embed = embed)
+            await ctx.send(content = f"Playing \"{musicList[currIndex].title}\" for you right now! Master {ctx.message.author.name}!", embed = embed)
         elif(ctx.message.guild.id in CNGuilds):
-            await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{name}》！", embed = embed)#notify user the song started playing
+            await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{musicList[currIndex].title}》！", embed = embed)#notify user the song started playing
         while(voice.is_playing() or voice.is_paused()):
             await asyncio.sleep(1)
         if(len(musicList) == 1 and not LOOP_ALL and not LOOP_SINGLE):
@@ -340,7 +342,7 @@ async def playlist(ctx):
     playlist = ""
     i = 1
     for url in musicList:
-        name = subprocess.check_output(f"youtube-dl --get-title {url}", shell = True).decode()
+        name = url.title
         playlist += f"{i}. {name}\n"
         i += 1
     if(LOOP_ALL):
@@ -358,7 +360,7 @@ async def playlist(ctx):
 @maid.command(aliases = ['rm'])
 async def remove(ctx, num: int):
     global musicList
-    name = subprocess.check_output(f"youtube-dl --get-title {musicList[num - 1]}", shell = True).decode()
+    name = musicList[num - 1].title
     musicList.pop(num - 1)
     if(ctx.guild.id in ENGuilds):
         await ctx.send(f"\"{name}\" has been deleted for Master {ctx.author.name}!")
@@ -527,7 +529,8 @@ def saveSet():
             fout.write("really: False\n")
         fout.write(f'volume: {MUSIC_VOLUME}\n')
         fout.write(f'PID: {PID}\n')
-        fout.write(f'PPASS: {PPASS}')
+        fout.write(f'PPASS: {PPASS}\n')
+        fout.write(f'DEV_KEY: {DEV_KEY}')
         fout.close()
         return True
     except FileNotFoundError:
@@ -625,6 +628,7 @@ def loadSet():
     global PID
     global PPASS
     global MUSIC_VOLUME
+    global DEV_KEY
     try:
         fin = open("config.txt", 'r')
         TOKEN = ((fin.readline()).split())[1]
@@ -643,6 +647,7 @@ def loadSet():
         MUSIC_VOLUME= float(((fin.readline()).split())[1])
         PID = ((fin.readline()).split())[1]
         PPASS = ((fin.readline()).split())[1]
+        DEV_KEY = ((fin.readline()).split())[1]
         fin.close()
     except FileNotFoundError:
         print("File not found!")
