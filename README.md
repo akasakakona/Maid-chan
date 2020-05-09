@@ -8,16 +8,17 @@ She is based on Python, using Discord.py (Rewrite).
 
 She is being updated slowly.
 
-BUT she is getting better and better everyday!
+BUT she is getting better and better with every update!
 
 ![alt text](https://www.akasakakona.com/img/maid_chan.jpg "Maid-chan")
 
 
 # Dependencies
-- discord.py[voice].
-- youtube-dl.
-- pixivpy3.
-- gTTS.
+- discord.py[voice]
+- youtube-dl
+- pixivpy3
+- gTTS
+- google-api-python-client
 
 # Current Version
 1.1.0
