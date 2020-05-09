@@ -8,7 +8,7 @@ import shutil
 import pixivpy3
 import time
 from pixivpy3 import *
-import subprocess
+from googleapiclient.discovery import build
 
 TOKEN = ""
 maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱', "！"))
@@ -87,12 +87,12 @@ async def play(ctx,url: str):
         except:
             await ctx.send(f"MAID ERROR: VIDEO EXTRACTION FAILED FOR URL: {musicList[currIndex]} ! PLEASE TRY AGAIN!")
             musicList.remove(musicList[currIndex])
-            if(len(musicList) == 0){
+            if(len(musicList) == 0):
                 break
-            }
             continue
 
         await asyncio.sleep(3) #need to wait for youtube-dl to merge fragment files before preceeding
+        fileformat = ""
         for file in os.listdir("./"):
             if(file.startswith(name)):
                 tempArr = file.split('.')
