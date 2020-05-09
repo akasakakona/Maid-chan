@@ -18,6 +18,7 @@ BUT she is getting better and better everyday!
 - youtube-dl.
 - pixivpy3.
 - gTTS.
+- googleapiclient.
 
 # Current Version
 1.1.0
