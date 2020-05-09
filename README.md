@@ -14,11 +14,11 @@ BUT she is getting better and better with every update!
 
 
 # Dependencies
-- discord.py[voice].
-- youtube-dl.
-- pixivpy3.
-- gTTS.
-- googleapiclient.
+- discord.py[voice]
+- youtube-dl
+- pixivpy3
+- gTTS
+- google-api-python-client
 
 # Current Version
 1.1.0
