@@ -648,7 +648,7 @@ async def say(ctx, language:str):
     voice.source = discord.PCMVolumeTransformer(voice.source)
     voice.source.volume = MUSIC_VOLUME
 
-def loadSet():
+def loadSet(filename):
     global ENGuilds
     global CNGuilds
     global TOKEN
@@ -659,7 +659,7 @@ def loadSet():
     global MUSIC_VOLUME
     global DEV_KEY
     try:
-        fin = open("config.txt", 'r')
+        fin = open(filename, 'r')
         TOKEN = ((fin.readline()).split())[1]
         for gid in ((fin.readline()).split())[1:]:
           ENGuilds.append(int(gid))
@@ -681,5 +681,6 @@ def loadSet():
     except FileNotFoundError:
         print("File not found!")
 
-loadSet()
+# loadSet("config1.txt")
+# loadSet("config.txt")
 maid.run(TOKEN)
