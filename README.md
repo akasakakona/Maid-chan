@@ -118,4 +118,14 @@ For more information on formatting of the json file, see: `Sample Config.json`.
         -Finish `!assign` command
         -Finish `!removeRole` command
         -Debug and optimize `!play` and music related command
+        
+-05/17/2019 ---Feature Report & Future Planning---
+    @Current Version:
+        1.2.0
+    @Features:
+        -Added JSON support
+    @Future Planning:
+        -Finish `!assign` command
+        -Finish `!removeRole` command
+        -Debug and optimize `!play` and music related command
 ```
