@@ -14,11 +14,16 @@ BUT she is getting better and better with every update!
 
 
 # Dependencies
-- discord.py[voice]
-- youtube-dl
-- pixivpy3
-- gTTS
-- google-api-python-client
+- [discord.py[voice]](https://pypi.org/project/discord.py/)
+- [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html)
+- [pixivpy3](https://pypi.org/project/PixivPy/)
+- [gTTS](https://pypi.org/project/gTTS/)
+- [google-api-python-client](https://pypi.org/project/google-api-python-client/)
+
+# Before You Start
+You will need to create a configuration file and name it `config.json`. 
+
+For more information on formatting of the json file, see: `Sample Config.json`.
 
 # Current Version
 1.1.0
@@ -109,6 +114,16 @@ BUT she is getting better and better with every update!
         -`!delete [messageID]` to delete a message by its ID (NOTE: Permission needed!）
         -`!say [a language supported by gTTS] [text]` to have the bot pronounce the text in voice channel using your preferred language **(NOTE: You can find the list of languages supported by gTTS here: https://pypi.org/project/gTTS/1.2.1/)**
         -`!shutdown` to safely shut down the bot and save its settings. (NOTE: Remember to change the ID so it reacts to you!)
+    @Future Planning:
+        -Finish `!assign` command
+        -Finish `!removeRole` command
+        -Debug and optimize `!play` and music related command
+        
+-05/17/2019 ---Feature Report & Future Planning---
+    @Current Version:
+        1.2.0
+    @Features:
+        -Added JSON support
     @Future Planning:
         -Finish `!assign` command
         -Finish `!removeRole` command
