@@ -20,6 +20,11 @@ BUT she is getting better and better with every update!
 - gTTS
 - google-api-python-client
 
+# Before You Start
+You will need to create a configuration file and name it `config.json`. 
+
+For more information on formatting of the json file, see: [sample file](Sample Config.json)
+
 # Current Version
 1.1.0
 
