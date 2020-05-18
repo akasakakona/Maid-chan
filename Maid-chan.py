@@ -15,12 +15,34 @@ import difflib
 random.seed(time.time())
 
 class Video:
-    def __init__(self, title, description, thumbnail, duration, id):
+    def __init__(self, title, thumbnail, duration, id):
         self.title = title
-        self.description = description
         self.thumbnail = thumbnail
-        self.duration = duration[2:]
+        self.duration = parseDuration(duration)
         self.url = f"https://www.youtube.com/watch?v={id}"
+
+def parseDuration(duration):
+    h = 0
+    m = 0
+    s = 0
+    tempList = []
+    tempNum = ""
+    for char in duration:
+        tempList.append(char)
+    for i in range(0, len(tempList) - 1):
+        if(tempList[i].isnumeric()):
+            tempNum += tempList[i]
+            if(tempList[i + 1].isalpha()):
+                if(tempList[i + 1] == 'S'):
+                    s = int(tempNum)
+                    tempNum = ""
+                elif(tempList[i + 1] == 'M'):
+                    m = int(tempNum)
+                    tempNum = ""
+                else:
+                    h = int(tempNum)
+                    tempNum = ""
+    return f"Duration: {h}:{m}:{s}"
 
 TOKEN = ""
 DEV_KEY = ""
@@ -222,14 +244,21 @@ async def play(ctx,url: str):
     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
         channel = ctx.message.author.voice.channel#get what channel he is in
         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
-        if(ctx.guild.id in ENGuilds):
-            await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
-        elif(ctx.guild.id in CNGuilds):
-            await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
         youtube = build("youtube", "v3", developerKey=DEV_KEY)
-        request = youtube.videos().list(part = "snippet,contentDetails", id = url[-11:])
-        result = request.execute()
-        musicList.append(Video(result["items"][0]["snippet"]["title"], result["items"][0]["snippet"]["description"], result["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result["items"][0]["contentDetails"]["duration"], url[-11:]))
+        if(url.find("playlist?list=") >= 0):
+            request = youtube.playlistItems().list(part="contentDetails", maxResults=50, playlistId=url[url.find("playlist?list=")+14 : len(url)])
+            result = request.execute()
+            for item in result["items"]:
+                tempUrl = "https://www.youtube.com/watch?v=" + item["contentDetails"]["videoId"]
+                request1 = 
+        else:
+            request = youtube.videos().list(part = "snippet,contentDetails", id = url[-11:])
+            result = request.execute()
+            musicList.append(Video(result["items"][0]["snippet"]["title"], result["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result["items"][0]["contentDetails"]["duration"], url[-11:]))
+            if(ctx.guild.id in ENGuilds):
+                await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
+            elif(ctx.guild.id in CNGuilds):
+                await ctx.send(f"收到点歌请求！正在处理{ctx.message.author.name}様的点歌请求！")
         if(voice is not None):
             return
     else:
