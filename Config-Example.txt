@@ -1,0 +1,9 @@
+token: #Your Discord Bot Token
+ENGuilds: #discordServerID1 #DiscordServerID2 #...
+CNGuilds: 123456789012345678 123456789012345678 123456789012345678 
+XD: #True or False
+really: #True or False
+volume: 0.7
+PID: #Your Pixiv Email
+PPASS: #Your Pixiv Password
+DEV_KEY: #Your Youtube API Developer Key
