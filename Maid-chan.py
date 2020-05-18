@@ -11,6 +11,7 @@ import time
 from gtts import gTTS
 from googleapiclient.discovery import build
 import difflib
+import json
 
 random.seed(time.time())
 
@@ -250,7 +251,7 @@ async def play(ctx,url: str):
             result = request.execute()
             for item in result["items"]:
                 tempUrl = "https://www.youtube.com/watch?v=" + item["contentDetails"]["videoId"]
-                request1 = 
+                request1 = ""
         else:
             request = youtube.videos().list(part = "snippet,contentDetails", id = url[-11:])
             result = request.execute()
@@ -456,34 +457,48 @@ async def stop(ctx):#PLANNING TO REPLACE STOP W/ SKIP. THAT WAY I CAN USE KING C
 async def setVol(ctx, vol:float):
     global MUSIC_VOLUME
     MUSIC_VOLUME = vol
+    modSet(modType="volume", modData=vol)
     if(ctx.message.guild.id in CNGuilds):
         await ctx.send(f"已经为{ctx.message.author.name}様将音量设为了{vol * 100}%!将在下一首歌生效!")
     else:
         await ctx.send(f"I have changed the volume to {vol * 100}%, Master {ctx.message.author.name}!It will take effect when the next song starts!")
 
-@maid.command(brief = "***PRIVATE FEATURE***")
-async def noXD(ctx):
+@maid.command(brief = "***PRIVATE FEATURE***", aliases=['XD'])
+async def _XD(ctx, state: str):
     global XD
-    XD = False
-    await ctx.send('Okay... Guess I\'m just an annoying bot that no one likes... QAQ')
+    if(state.lower() == "on"):
+        if(XD):
+            await ctx.send("XD is already on! XD XD XD!")
+        else:
+            XD = True
+            modSet(modType="XD", modData="True")
+            await ctx.send('Yay! Guess you still like me after all! XD')
+    elif(state.lower() == "off"):
+        if(not XD):
+            await ctx.send("XD is already off! QAQ")
+        else:
+            XD = False
+            modSet(modType="XD", modData="False")
+            await ctx.send('Okay... Guess I\'m just an annoying bot that no one likes... QAQ')
 
-@maid.command(brief = "***PRIVATE FEATURE***")
-async def yesXD(ctx):
-    global XD
-    XD = True
-    await ctx.send('Yay! Guess you still like me after all! XD')
-
-@maid.command(brief = "***PRIVATE FEATURE***")
-async def noReally(ctx):
+@maid.command(brief = "***PRIVATE FEATURE***", aliases=['really'])
+async def _really(ctx, state: str):
     global really
-    really = False
-    await ctx.send('Okay... I\'m a dumb bot...>A<')
-
-@maid.command(brief = "***PRIVATE FEATURE***")
-async def yesReally(ctx):
-    global really
-    really = True
-    await ctx.send('Yay! Guess I\'m smart after all! Smarter than you dumb humans! ^V^')
+    if(state.lower() == "on"):
+        if(really):
+            await ctx.send("Really! It is already on!")
+        else:
+            really = True
+            modSet(modType="really", modData="True")
+            await ctx.send('Yay! Guess I\'m smart after all! Smarter than you dumb humans! ^V^')
+    elif(state.lower() == "off"):
+        if(not really):
+            await ctx.send("Really! It is already off! QAQ")
+        else:
+            XD = False
+            modSet(modType="really", modData="False")
+            await ctx.send('Okay... I\'m a dumb bot...>A<')
+    
 
 @maid.command(brief = "***PRIVATE FEATURE***", aliases = ['你真可爱，嫁给我好吗♡', '婚礼定在6月28号可以吗？'])
 async def love(ctx):
@@ -536,44 +551,12 @@ async def RR(ctx):
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"恭喜! {ctx.author.name}还活着!")
 
-def saveSet():
-    try:
-        fout = open("config.txt", 'w')
-        fout.write(f'token: {TOKEN}\n')
-        fout.write("ENGuilds: ")
-        for gid in ENGuilds:
-          fout.write(f'{gid} ')
-        fout.write('\n')
-        fout.write("CNGuilds: ")
-        for gid in CNGuilds:
-          fout.write(f'{gid} ')
-        fout.write('\n')
-        if(XD):
-            fout.write("XD: True\n")
-        else:
-            fout.write("XD: False\n")
-        if(really):
-            fout.write("really: True\n")
-        else:
-            fout.write("really: False\n")
-        fout.write(f'volume: {MUSIC_VOLUME}\n')
-        fout.write(f'PID: {PID}\n')
-        fout.write(f'PPASS: {PPASS}\n')
-        fout.write(f'DEV_KEY: {DEV_KEY}')
-        fout.close()
-        return True
-    except FileNotFoundError:
-        return False
-
 @maid.command()
 async def shutdown(ctx):
     if(ctx.author.id != 358838608779673600):
         await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
         return
-    if(saveSet()):
-        await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
-    else:
-        await ctx.send('MAID ERROR: SAVE SETTINGS ERROR... I\'m sorry AkasakaKona-Sama... (Q A Q)')
+    await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
     await maid.close()
 
 @maid.command(brief = "***Private Feature***")
@@ -581,12 +564,16 @@ async def setGuild(ctx, gtype:str):
     if(ctx.guild.id in CNGuilds or ctx.guild.id in ENGuilds):
         if(gtype.lower() == "cn" and ctx.guild.id in ENGuilds):
             ENGuilds.pop(ENGuilds.index(ctx.guild.id))
+            modSet(modType="ENGuilds", modAction="del", modData=ctx.guild.id)
             CNGuilds.append(ctx.guild.id)
-            await ctx.send(f'{ctx.guild.name}\'s language has been set to Chinese!')
+            modSet(modType="CNGuilds", modAction="add", modData=ctx.guild.id)
+            await ctx.send(f'{ctx.guild.name}的语言已被设为中文！')
             return
         elif(gtype.lower() == "en" and ctx.guild.id in CNGuilds):
             CNGuilds.pop(CNGuilds.index(ctx.guild.id))
+            modSet(modType="CNGuilds", modAction="del", modData=ctx.guild.id)
             ENGuilds.append(ctx.guild.id)
+            modSet(modType="ENGuilds", modAction="add", modData=ctx.guild.id)
             await ctx.send(f'{ctx.guild.name}\'s language has been set to English!')
             return
         else:
@@ -594,10 +581,10 @@ async def setGuild(ctx, gtype:str):
             return
 
     if(gtype.lower() == "cn"):
-        CNGuilds.append(ctx.guild.id)
-        await ctx.send(f'{ctx.guild.name}\'s language has been set to Chinese!')
+        modSet(modType="CNGuilds", modAction="add", modData=ctx.guild.id)
+        await ctx.send(f'{ctx.guild.name}的语言已被设为中文！')
     elif(gtype.lower() == "en"):
-        ENGuilds.append(ctx.guild.id)
+        modSet(modType="ENGuilds", modAction="add", modData=ctx.guild.id)
         await ctx.send(f'{ctx.guild.name}\'s language has been set to English!')
     else:
         await ctx.send("MAID ERROR: IMPROPER USAGE")
@@ -606,9 +593,11 @@ async def setGuild(ctx, gtype:str):
 async def delGuild(ctx):
     if(ctx.guild.id in CNGuilds):
         CNGuilds.pop(CNGuilds.index(ctx.guild.id))
+        modSet(modType="CNGuilds", modAction="del", modData=ctx.guild.id)
         await ctx.send(f'{ctx.guild.name} has been deleted!')
     elif(ctx.guild.id in ENGuilds):
         ENGuilds.pop(ENGuilds.index(ctx.guild.id))
+        modSet(modType="ENGuilds", modAction="del", modData=ctx.guild.id)
         await ctx.send(f'{ctx.guild.name} has been deleted!')
     else:
         await ctx.send(f'MAID ERROR: GUILD IS NOT ON RECORD')
@@ -659,28 +648,45 @@ def loadSet(filename):
     global MUSIC_VOLUME
     global DEV_KEY
     try:
-        fin = open(filename, 'r')
-        TOKEN = ((fin.readline()).split())[1]
-        for gid in ((fin.readline()).split())[1:]:
-          ENGuilds.append(int(gid))
-        for gid in ((fin.readline()).split())[1:]:
-          CNGuilds.append(int(gid))
-        if(((fin.readline()).split())[1] == "True"):
+        with open(filename) as f:
+            config_dict = json.load(f)
+        TOKEN = config_dict['TOKEN']
+        for gid in config_dict['ENGuilds']:
+          ENGuilds.append(gid)
+        for gid in config_dict['CNGuilds']:
+          CNGuilds.append(gid)
+        if(config_dict['XD'] == "True"):
           XD = True
         else:
           XD = False
-        if(((fin.readline()).split())[1] == "True"):
+        if(config_dict['really'] == "True"):
           really = True
         else:
           really = False
-        MUSIC_VOLUME= float(((fin.readline()).split())[1])
-        PID = ((fin.readline()).split())[1]
-        PPASS = ((fin.readline()).split())[1]
-        DEV_KEY = ((fin.readline()).split())[1]
-        fin.close()
+        MUSIC_VOLUME= config_dict['volume']
+        PID = config_dict['PID']
+        PPASS = config_dict['PPASS']
+        DEV_KEY = config_dict['DEV_KEY']
+        f.close()
     except FileNotFoundError:
         print("File not found!")
 
-# loadSet("config1.txt")
-# loadSet("config.txt")
+def modSet(modType, modData, modAction = None,):
+    with open(FILENAME) as f:
+        config_dict = json.load(f)
+    f.close()
+    if(modAction is not None):
+        if(modAction == "del"):
+            config_dict[modType].pop(config_dict[modType].index(modData))
+        else:
+            config_dict[modType].append(modData)
+    else:
+        config_dict[modType] = modData
+    with open(FILENAME, 'w') as json_file:
+        json.dump(config_dict, json_file, indent = 1)
+    json_file.close()
+
+# FILENAME = "config1.json"
+FILENAME = "config.json"
+loadSet(FILENAME)
 maid.run(TOKEN)

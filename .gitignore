@@ -1,6 +1,6 @@
 
 *.mp3
-config.txt
-config1.txt
+config.json
+config1.json
 .vscode/settings.json
 test.py
