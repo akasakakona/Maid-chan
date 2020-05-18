@@ -14,7 +14,7 @@ BUT she is getting better and better with every update!
 
 
 # Dependencies
-- [discord.py[voice](https://pypi.org/project/discord.py/)
+- [discord.py[voice]](https://pypi.org/project/discord.py/)
 - [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html)
 - [pixivpy3](https://pypi.org/project/PixivPy/)
 - [gTTS](https://pypi.org/project/gTTS/)
