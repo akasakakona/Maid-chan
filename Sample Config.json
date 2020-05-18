@@ -16,4 +16,5 @@
  "PID": "#Your Pixiv Email",
  "PPASS": "#Your Pixiv Password",
  "DEV_KEY": "#Your Youtube API Developer Key"
+ "ADMIN": #Your Discord User ID
 }

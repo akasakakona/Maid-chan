@@ -551,9 +551,10 @@ async def RR(ctx):
         elif(ctx.message.guild.id in CNGuilds):
             await ctx.send(f"恭喜! {ctx.author.name}还活着!")
 
+ADMIN = 0
 @maid.command()
 async def shutdown(ctx):
-    if(ctx.author.id != 358838608779673600):
+    if(ctx.author.id != ADMIN):
         await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
         return
     await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
@@ -647,6 +648,7 @@ def loadSet(filename):
     global PPASS
     global MUSIC_VOLUME
     global DEV_KEY
+    global ADMIN
     try:
         with open(filename) as f:
             config_dict = json.load(f)
@@ -667,6 +669,7 @@ def loadSet(filename):
         PID = config_dict['PID']
         PPASS = config_dict['PPASS']
         DEV_KEY = config_dict['DEV_KEY']
+        ADMIN = config_dict['ADMIN']
         f.close()
     except FileNotFoundError:
         print("File not found!")
