@@ -16,11 +16,12 @@ import json
 random.seed(time.time())
 
 class Video:
-    def __init__(self, title, thumbnail, duration, id):
+    def __init__(self, title, thumbnail, duration, id, author):
         self.title = title
         self.thumbnail = thumbnail
         self.duration = parseDuration(duration)
         self.url = f"https://www.youtube.com/watch?v={id}"
+        self.author = author
 
 def parseDuration(duration):
     h = 0
@@ -251,11 +252,13 @@ async def play(ctx,url: str):
             result = request.execute()
             for item in result["items"]:
                 tempUrl = "https://www.youtube.com/watch?v=" + item["contentDetails"]["videoId"]
-                request1 = ""
+                request1 = youtube.videos().list(part = "snippet,contentDetails", id = tempUrl)
+                result1 = request1.execute()
+                musicList.append(Video(result1["items"][0]["snippet"]["title"], result1["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result1["items"][0]["contentDetails"]["duration"], tempUrl, ctx.message.author))
         else:
             request = youtube.videos().list(part = "snippet,contentDetails", id = url[-11:])
             result = request.execute()
-            musicList.append(Video(result["items"][0]["snippet"]["title"], result["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result["items"][0]["contentDetails"]["duration"], url[-11:]))
+            musicList.append(Video(result["items"][0]["snippet"]["title"], result["items"][0]["snippet"]["thumbnails"]["maxres"]["url"], result["items"][0]["contentDetails"]["duration"], url[-11:], ctx.message.author))
             if(ctx.guild.id in ENGuilds):
                 await ctx.send(f"Play request received! Processing Master {ctx.message.author.name}\'s play request!")
             elif(ctx.guild.id in CNGuilds):
@@ -293,13 +296,13 @@ async def play(ctx,url: str):
         voice.source = discord.PCMVolumeTransformer(voice.source)#sets volume of the song playing
         voice.source.volume = MUSIC_VOLUME#0.7 is 70%, might make a function that make volume adjustable later
 
-        embed = discord.Embed(title = musicList[currIndex].title, description = f"{musicList[currIndex].description}\n```Duration: {musicList[currIndex].duration}```", colour = discord.Color.magenta(), url = url)
-        embed.set_footer(text = ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+        embed = discord.Embed(title = musicList[currIndex].title, description = f"```Duration: {musicList[currIndex].duration}```", colour = discord.Color.magenta(), url = url)
+        embed.set_footer(text = musicList[currIndex].name, icon_url=musicList[currIndex].author.avatar_url)
         embed.set_thumbnail(url = musicList[currIndex].thumbnail)
         if(ctx.message.guild.id in ENGuilds):
-            await ctx.send(content = f"Playing \"{musicList[currIndex].title}\" for you right now! Master {ctx.message.author.name}!", embed = embed)
+            await ctx.send(content = f"Playing \"{musicList[currIndex].title}\" for you right now! Master {musicList[currIndex].name}!", embed = embed)
         elif(ctx.message.guild.id in CNGuilds):
-            await ctx.send(content = f"正在播放{ctx.message.author.name}様点播的《{musicList[currIndex].title}》！", embed = embed)#notify user the song started playing
+            await ctx.send(content = f"正在播放{musicList[currIndex].name}様点播的《{musicList[currIndex].title}》！", embed = embed)#notify user the song started playing
         while(voice.is_playing() or voice.is_paused()):
             await asyncio.sleep(1)
         if(len(musicList) == 1 and not LOOP_ALL and not LOOP_SINGLE):
@@ -552,13 +555,16 @@ async def RR(ctx):
             await ctx.send(f"恭喜! {ctx.author.name}还活着!")
 
 ADMIN = 0
-@maid.command()
-async def shutdown(ctx):
+@maid.command(aliases=['off'])
+async def shutdown(ctx, next: str="none"):
     if(ctx.author.id != ADMIN):
         await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
         return
     await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
     await maid.close()
+    if(next.lower == "reboot" or next.lower == "restart"):
+        maid.run()
+        await ctx.send('Successfully Rebooted! Nice to see you again! AkasakaKona-Sama!')
 
 @maid.command(brief = "***Private Feature***")
 async def setGuild(ctx, gtype:str):
