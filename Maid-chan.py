@@ -60,11 +60,6 @@ prevMessage = ""
 messageRepeat = 0
 
 @maid.event
-async def on_ready():
-    await maid.change_presence(status=discord.Status.idle, activity = discord.Game(" with catgirls"))
-    print(f"Logged in as {maid.user.name}")
-
-@maid.event
 async def on_member_join(member):
     guild = member.guild.name
     print(f'{member} has joined {guild}.')
@@ -157,10 +152,6 @@ async def on_message(message):
         await maid.process_commands(message)
     else:
         await maid.process_commands(message)
-
-@maid.command(brief = 'Get the ping of maid-chan.')
-async def ping(ctx):
-    await ctx.send(f'The ping is {round(maid.latency * 1000)}ms')
 
 @maid.command(brief = 'Get a random and cute response from maid-chan.')
 async def hi(ctx):
@@ -586,6 +577,9 @@ async def setGuild(ctx, gtype:str):
         else:
             await ctx.send("MAID ERROR: GUILD ALREADY EXISTS")
             return
+    else:
+        await ctx.send("MAID ERROR: GUILD DOES NOT EXIST")
+        return
 
     if(gtype.lower() == "cn"):
         modSet(modType="CNGuilds", modAction="add", modData=ctx.guild.id)
@@ -594,7 +588,7 @@ async def setGuild(ctx, gtype:str):
         modSet(modType="ENGuilds", modAction="add", modData=ctx.guild.id)
         await ctx.send(f'{ctx.guild.name}\'s language has been set to English!')
     else:
-        await ctx.send("MAID ERROR: IMPROPER USAGE")
+        await ctx.send("MAID ERROR: IMPROPER USAGE `!setGuild [en/cn]`")
 
 @maid.command(brief = "***Private Feature***")
 async def delGuild(ctx):
@@ -679,8 +673,11 @@ def loadSet(filename):
         f.close()
     except FileNotFoundError:
         print("File not found!")
+    for extension in os.listdir('./extensions'):
+        if extension.endswith('.py'):
+            maid.load_extension(f'extensions.{extension[:-3]}')
 
-def modSet(modType, modData, modAction = None,):
+def modSet(modType, modData, modAction = None):
     with open(FILENAME) as f:
         config_dict = json.load(f)
     f.close()
