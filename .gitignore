@@ -4,4 +4,4 @@ config.json
 config1.json
 .vscode/settings.json
 test.py
-extensions/__pycache__/debugging.cpython-38.pyc
+*.pyc
