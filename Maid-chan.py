@@ -10,9 +10,7 @@ from pixivpy3 import *
 import time
 from gtts import gTTS
 from googleapiclient.discovery import build
-import difflib
 import json
-import sys
 
 # random.seed(time.time())
 
@@ -49,22 +47,7 @@ import sys
 
 
 
-# @maid.event
-# async def on_member_join(member):
-#     guild = member.guild.name
-#     print(f'{member} has joined {guild}.')
-#     if(member.guild.id == 352312296309260289):
-#         channel = member.guild.get_channel(352314900359413761)
-#         await channel.send(f'Welcome to the Passerines! <@{member.id}>!')
-#     elif(member.guild.id == 358473448076607499):
-#         channel = member.guild.get_channel(358473448076607500)
-#         await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！')
-#     elif(member.guild.id == 431610460307980302):
-#         channel = member.guild.get_channel(431610460307980306)
-#         await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！')
-#     elif(member.guild.id == 392194794018963456):
-#         channel = member.guild.get_channel(392194794018963459)
-#         await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！欢迎来到DOLLARS的时差党！')
+
 
 # @maid.event
 # async def on_member_remove(member):
@@ -491,39 +474,6 @@ import sys
 #     else:
 #         return
 
-# PID = ""
-# PPASS = ""
-# @maid.command(brief = "Search for pics on Pixiv! Usage: !picSearch [keyword] or !色图 [keyword]", aliases = ['色图'])
-# async def picSearch(ctx, title: str):
-#     global PID
-#     global PPASS
-#     pixivAPI = AppPixivAPI()
-#     pixivAPI.login(PID, PPASS)
-#     result = pixivAPI.search_illust(title)
-#     if(len(result.illusts) != 0):
-#         illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
-#         imagePresent = os.path.isfile(f'illust.jpg')
-#         if(imagePresent):
-#             os.remove(f'illust.jpg')
-#         pixivAPI.download(illust.image_urls.large, fname=f'illust.jpg')
-#         await ctx.send(content = f"Title: {illust.title}", file=discord.File(f'illust.jpg'))
-#     else:
-#         await ctx.send("Image can\'t be found! 无法找到图片！")
-
-
-
-# ADMIN = 0
-# @maid.command(aliases=['off'])
-# async def shutdown(ctx, next: str="none"):
-#     if(ctx.author.id != ADMIN):
-#         await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
-#         return
-#     await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
-#     await maid.close()
-#     if(next.lower == "reboot" or next.lower == "restart"):
-#         maid.run()
-#         await ctx.send('Successfully Rebooted! Nice to see you again! AkasakaKona-Sama!')
-
 # @maid.command(brief = "***Private Feature***")
 # async def setGuild(ctx, gtype:str):
 #     if(ctx.guild.id in CNGuilds or ctx.guild.id in ENGuilds):
@@ -575,35 +525,6 @@ import sys
 #     message = await ctx.channel.fetch_message(messageID)
 #     await message.delete()
 #     await ctx.send("Message deleted!")
-
-# @maid.command()
-# async def say(ctx, language:str):
-#     if(ctx.message.author.voice is not None):#if the author of the message is in voice channel
-#         channel = ctx.message.author.voice.channel#get what channel he is in
-#         voice = ctx.guild.voice_client#from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
-#         if(voice and voice.is_connected()):#if there is a connection AND maid-chan is connected
-#             await voice.move_to(channel)#move to the channel where the author is
-#         else:
-#             voice = await channel.connect()#or else, connect to the channel directly
-#     else:
-#         if(ctx.message.guild.id in ENGuilds):
-#             await ctx.send(f"{ctx.author.mention} is not in the voice channel... I\'m lonely...")
-#         elif(ctx.message.guild.id in CNGuilds):
-#             await ctx.send(f"{ctx.author.mention}不在语音频道里欸...好寂寞...")
-#         return
-#     if(language == 'cn'):
-#         language = 'zh-cn'
-#     elif(language == 'jp'):
-#         language = 'ja'
-#     elif(language == 'dc' or language == 'fuckoff'):
-#         await voice.disconnect()
-#         return
-#     txt = ctx.message.content[8:]
-#     voiceObj = gTTS(text = txt, lang = language, slow = False)
-#     voiceObj.save("tts.mp3")
-#     voice.play(discord.FFmpegPCMAudio("tts.mp3"))
-#     voice.source = discord.PCMVolumeTransformer(voice.source)
-#     voice.source.volume = MUSIC_VOLUME
 
 
 
