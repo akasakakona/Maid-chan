@@ -6,6 +6,9 @@ from gtts import gTTS
 import os
 import pixivpy3
 from pixivpy3 import AppPixivAPI
+import time
+
+random.seed(time.time())
 
 class Entertainment(commands.Cog):
     def __init__(self, maid):
@@ -70,7 +73,7 @@ class Entertainment(commands.Cog):
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = config_dict['volume']
     
-    @commands.command()
+    @commands.command(aliases=['色图'])
     async def picSearch(self, ctx, title:str):
         with open('config.json') as f:
             config_dict = json.load(f)

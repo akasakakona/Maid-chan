@@ -1,153 +1,7 @@
 import discord
 from discord.ext import commands
-from discord.utils import get
-import random
-import youtube_dl
 import os
-import asyncio
-import pixivpy3
-from pixivpy3 import *
-import time
-from gtts import gTTS
-from googleapiclient.discovery import build
 import json
-
-# random.seed(time.time())
-
-# class Video:
-#     def __init__(self, title, thumbnail, duration, id, author):
-#         self.title = title
-#         self.thumbnail = thumbnail
-#         self.duration = parseDuration(duration)
-#         self.url = f"https://www.youtube.com/watch?v={id}"
-#         self.author = author
-
-# def parseDuration(duration):
-#     h = 0
-#     m = 0
-#     s = 0
-#     tempList = []
-#     tempNum = ""
-#     for char in duration:
-#         tempList.append(char)
-#     for i in range(0, len(tempList) - 1):
-#         if(tempList[i].isnumeric()):
-#             tempNum += tempList[i]
-#             if(tempList[i + 1].isalpha()):
-#                 if(tempList[i + 1] == 'S'):
-#                     s = int(tempNum)
-#                     tempNum = ""
-#                 elif(tempList[i + 1] == 'M'):
-#                     m = int(tempNum)
-#                     tempNum = ""
-#                 else:
-#                     h = int(tempNum)
-#                     tempNum = ""
-#     return f"Duration: {h}:{m}:{s}"
-
-
-
-
-
-# @maid.event
-# async def on_member_remove(member):
-#     guild = member.guild.name
-#     print(f'{member} has left {guild}.')
-
-# @maid.event
-# async def on_raw_reaction_add(payload):
-#     messageID = payload.message_id
-#     if (messageID == 654642859156307980):
-#         guildID = payload.guild_id
-#         guild = maid.get_guild(guildID)
-#         if(payload.emoji.name == 'derp'):
-#             role = guild.get_role(402649667843915776)
-#         else:
-#             role = discord.utils.get(guild.roles, name = payload.emoji.name)
-
-#         if(role is not None):
-#             member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
-#             if(member is not None):
-#                 await member.add_roles(role)
-#                 print(f'The member {member} from server {guild} has joined the role')
-#             else:
-#                 print('Member not found!')
-#         else:
-#             print('Role not found!')
-
-# @maid.event
-# async def on_raw_reaction_remove(payload):
-#     messageID = payload.message_id
-#     if (messageID == 654642859156307980):
-#         guildID = payload.guild_id
-#         guild = maid.get_guild(guildID)
-#         if(payload.emoji.name == 'derp'):
-#             role = guild.get_role(402649667843915776)
-#         else:
-#             role = discord.utils.get(guild.roles, name = payload.emoji.name)
-
-#         if(role is not None):
-#             member = discord.utils.find(lambda m : m.id == payload.user_id, guild.members)
-#             if(member is not None):
-#                 await member.remove_roles(role)
-#                 print(f'The member {member} from {guild} has left the role.')
-#             else:
-#                 print('Member not found!')
-#         else:
-#             print('Role not found!')
-
-# @maid.event###Reserved for personal use! (Mostly to spam Reaily XD)
-# async def on_message(message):
-#     global XD
-#     global really
-#     global prevMessage
-#     global messageRepeat
-#     channel = message.channel
-#     originalMessage = message.content
-#     if(originalMessage == prevMessage):
-#         messageRepeat += 1
-#     if(messageRepeat > 1):
-#         messageRepeat = 0
-#         await channel.send(originalMessage)
-#         await maid.process_commands(message)
-#     prevMessage = originalMessage
-#     lowerMessage = originalMessage.lower()
-#     reallyIndex = lowerMessage.find('really')
-#     shotIndex = lowerMessage.find('shot')
-#     if(shotIndex >= 0 and message.author.id != 555273228440829954):
-#         await channel.send("Did somebody say SHOT?!\n https://cdn.discordapp.com/attachments/177595404324438016/505788828167176195/1540657957240.png")
-#         await maid.process_commands(message)
-#     if(message.author.id == 378085550499954699 and message.author.guild.id == 352312296309260289 and XD == True):
-#         await channel.send('XD')
-#         await maid.process_commands(message)
-#     elif(reallyIndex >= 0 and message.author.id != 555273228440829954 and message.author.guild.id == 352312296309260289 and really == True):
-#         await channel.send(f'Hey! {message.author.mention}! I think you meant <@378085550499954699> instead of "{originalMessage[reallyIndex : reallyIndex + 6]}"! <:thonk:615740280913657866>')
-#         await maid.process_commands(message)
-#     else:
-#         await maid.process_commands(message)
-
-# @maid.command(brief = 'Get a random and cute response from maid-chan.')
-# async def hi(ctx):
-#     guild = ctx.message.guild.id
-#     member = ctx.message.author.name
-#     if(guild in CNGuilds):
-#         possible_responses = [
-#         '哟，今天的风儿好喧嚣啊',
-#         '哟！不得了了，隔壁超市薯片半价了！！',
-#         'こんにちは！',
-#         '你好啊！',
-#         f'欢迎回来！{member}様!お帰りなさい！'
-#          ]
-#         await ctx.send(random.choice(possible_responses) + ctx.message.author.mention)
-#     elif(guild in ENGuilds):
-#         possible_responses = [
-#         'Hey!',
-#         'Hi!',
-#         'Whassup!'
-#          ]
-#         await ctx.send(random.choice(possible_responses) + ctx.message.author.mention)
-#     else:
-#         await ctx.send("Please contact admin to set your language preference!\n请联系管理员设定你的语言！" + ctx.message.author.mention)
 
 # @maid.command(brief = '***FEATURE DEVELOPMEN*** DO NOT USE!!!')#FIXME: A config file is needed to limit  this  to certain roles
 # async def assign(ctx):#Command should be "!assign @name role"
@@ -180,7 +34,7 @@ import json
 #             ctx.send("MAID ERROR: Role not found!")
 
 # @maid.command(brief = '***FEATURE IN DEVELOPMENT*** DO NOT USE!!!')#FIXME: A config file is needed to limit  this  to certain roles
-# async def removeRole(ctx):
+# async def remove(ctx):
 #     guildID = ctx.message.guild.id
 #     guild = discord.utils.find(lambda g : g.id == guildID, maid.guilds)
 #     content = ctx.message.content
@@ -429,42 +283,6 @@ import json
 #         await ctx.send(f"已经为{ctx.message.author.name}様将音量设为了{vol * 100}%!将在下一首歌生效!")
 #     else:
 #         await ctx.send(f"I have changed the volume to {vol * 100}%, Master {ctx.message.author.name}!It will take effect when the next song starts!")
-
-# @maid.command(brief = "***PRIVATE FEATURE***", aliases=['XD'])
-# async def _XD(ctx, state: str):
-#     global XD
-#     if(state.lower() == "on"):
-#         if(XD):
-#             await ctx.send("XD is already on! XD XD XD!")
-#         else:
-#             XD = True
-#             modSet(modType="XD", modData="True")
-#             await ctx.send('Yay! Guess you still like me after all! XD')
-#     elif(state.lower() == "off"):
-#         if(not XD):
-#             await ctx.send("XD is already off! QAQ")
-#         else:
-#             XD = False
-#             modSet(modType="XD", modData="False")
-#             await ctx.send('Okay... Guess I\'m just an annoying bot that no one likes... QAQ')
-
-# @maid.command(brief = "***PRIVATE FEATURE***", aliases=['really'])
-# async def _really(ctx, state: str):
-#     global really
-#     if(state.lower() == "on"):
-#         if(really):
-#             await ctx.send("Really! It is already on!")
-#         else:
-#             really = True
-#             modSet(modType="really", modData="True")
-#             await ctx.send('Yay! Guess I\'m smart after all! Smarter than you dumb humans! ^V^')
-#     elif(state.lower() == "off"):
-#         if(not really):
-#             await ctx.send("Really! It is already off! QAQ")
-#         else:
-#             XD = False
-#             modSet(modType="really", modData="False")
-#             await ctx.send('Okay... I\'m a dumb bot...>A<')
     
 
 # @maid.command(brief = "***PRIVATE FEATURE***", aliases = ['你真可爱，嫁给我好吗♡', '婚礼定在6月28号可以吗？'])
@@ -529,7 +347,7 @@ import json
 
 
 
-maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱',"老婆","媳妇","小可爱","小宝贝", '！'))
+maid = commands.Bot(command_prefix = commands.when_mentioned_or("!",".","?","MC ","mc ","Mc ","maid chan ","Maid chan ",'妹抖酱',"老婆","媳妇","小可爱","小宝贝", '！'), intents = discord.Intents.all())
 
 
 TOKEN = ""
