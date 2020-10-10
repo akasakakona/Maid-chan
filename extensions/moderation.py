@@ -2,14 +2,16 @@ import json
 import discord
 from discord.ext import commands
 import discord.utils
+import os
 
 class Server:
     def __init__(self, guildID):
         self.id = guildID
         self.modList = []
+        self.lang = "en"
         self.greetChannel = 0
         self.greetPhrase = ""
-        self.musicQueue = []
+
 
 class Moderation(commands.Cog):
     def __init__(self, maid):
@@ -17,39 +19,66 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            f.close()
         newServer = Server(guild.id)
         newServer.modList.append(guild.owner_id)
+        #FIXME: maybe prompt the owner to set up the bot
+        config_dict['ServerList'][guild.id] = newServer.__dict__
+        self.modSet(config_dict)
+        
 
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if(member.guild.id == 352312296309260289):
-            channel = member.guild.get_channel(352314900359413761)
-            await channel.send(f'Welcome to the Passerines! <@{member.id}>!')
-        elif(member.guild.id == 358473448076607499):
-            channel = member.guild.get_channel(358473448076607500)
-            await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！')
-        elif(member.guild.id == 431610460307980302):
-            channel = member.guild.get_channel(431610460307980306)
-            await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！')
-        elif(member.guild.id == 392194794018963456):
-            channel = member.guild.get_channel(392194794018963459)
-            await channel.send(f'欢迎<@{member.id}>様！いらっしゃいませ！欢迎来到DOLLARS的时差党！')
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            f.close()
+        channel = member.guild.get_channel(config_dict['ServerList'][str(member.guild.id)]['greetChannel'])
+        if(channel is not None):
+            greetPhrase = config_dict['ServerList'][str(member.guild.id)]['greetPhrase']
+            if(greetPhrase != ""):
+                await channel.send(greetPhrase)
 
-def modSet(modType, modData, modAction = None):
-    with open('config.json') as f:
-        config_dict = json.load(f)
-    f.close()
-    if(modAction is not None):
-        if(modAction == "del"):
-            config_dict[modType].pop(config_dict[modType].index(modData))
-        else:
-            config_dict[modType].append(modData)
-    else:
-        config_dict[modType] = modData
-    with open('config.json', 'w') as json_file:
-        json.dump(config_dict, json_file, indent = 1)
-    json_file.close()
+    @commands.command()
+    async def setLang(self, ctx, lang:str):
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            f.close()
+        if(ctx.author.id != config_dict["ADMIN"] and ctx.author.id not in config_dict['ServerList'][str(ctx.author.guild.id)]['modList']):
+            await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
+            return
+        if(lang == "cn" or lang == "en"):
+            config_dict['ServerList'][str(ctx.guild.id)]['lang'] = lang
+            self.modSet(config_dict)
+            await ctx.send(f"Successfully set the server language to {lang}!")
+            return
+        await ctx.send("MAID ERROR: IMPROPER USAGE, PLEASE REFER TO THE DOCUMENTATION!\nhttps://github.com/akasakakona/Maid-chan")
+    
+    @commands.command()
+    async def setGreet(self, ctx):
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            f.close()
+        if(ctx.author.id != config_dict["ADMIN"] and ctx.author.id not in config_dict['ServerList'][str(ctx.author.guild.id)]['modList']):
+            await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
+            return
+        greetPhrase = ctx.content[9:]
+        if(greetPhrase != ""):
+            config_dict['ServerList'][str(ctx.author.guild.id)]['greetPhrase'] = greetPhrase
+            await ctx.send(f'Successfully set the server\'s greeting phrase to \"{greetPhrase}\"!')
+            return
+        await ctx.send("MAID ERROR: IMPROPER USAGE, PLEASE REFER TO THE DOCUMENTATION!\nhttps://github.com/akasakakona/Maid-chan")
+
+        
+
+    def modSet(self, data):
+        with open('config.json', 'w') as json_file:
+            json.dump (data, json_file, indent=4)
+            json_file.close()
+
+
 
 def setup(maid):
     maid.add_cog(Moderation(maid))

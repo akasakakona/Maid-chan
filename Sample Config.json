@@ -1,20 +1,10 @@
 {
  "TOKEN": "#Your Discord Bot Token",
- "ENGuilds": [
- #discordServerID1,
- #DiscordServerID2,
- #DiscordServerID3
- ],
- "CNGuilds": [
-  012345678901234567,
-  701234567890123456,
-  670123456789012345
- ],
- "XD": "#True or False",
- "really": "#True or False",
- "volume": #Decimal Number Between 0.0 - 1.0,
- "PID": "#Your Pixiv Email",
- "PPASS": "#Your Pixiv Password",
- "DEV_KEY": "#Your Youtube API Developer Key",
- "ADMIN": #Your Discord User ID
+ "volume": 0.5,
+ "PID": "Your Pixiv Email In With Quotation Mark(Optional)",
+ "PPASS": "#Your Pixiv Password With Quotation Mark(Optional)",
+ "ADMIN": "#Your Discord User ID (without quotation mark on both ends)",
+ "ServerList": {
+
+ }
 }

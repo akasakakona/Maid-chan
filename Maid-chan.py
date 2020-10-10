@@ -538,7 +538,7 @@ try:
         config_dict = json.load(f)
     TOKEN = config_dict['TOKEN']
 except FileNotFoundError:
-    print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY!\n CURRENT DIRECTORTY: {os.getcwd()}")
+    print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY!\nCURRENT DIRECTORTY: {os.getcwd()}")
 
 
 for extension in os.listdir('./extensions'): #load extensions

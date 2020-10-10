@@ -5,13 +5,10 @@ import json
 class Debugging(commands.Cog):
     def __init__(self, maid):
         self.maid = maid
-        try:
-            with open('config.json') as f:
-                config_dict = json.load(f)
-                self.ADMIN = config_dict['ADMIN']
-                f.close()
-        except FileNotFoundError:
-            print("File not found!")
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            self.ADMIN = config_dict['ADMIN']
+            f.close()
     
     @commands.Cog.listener()
     async def on_ready(self):
