@@ -6,3 +6,4 @@ config1.json
 test.py
 *.pyc
 jsontestread.py
+data.py
