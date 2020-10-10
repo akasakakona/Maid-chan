@@ -1,7 +1,8 @@
-
+*.jpg
 *.mp3
 config.json
 config1.json
 .vscode/settings.json
 test.py
 *.pyc
+jsontestread.py
