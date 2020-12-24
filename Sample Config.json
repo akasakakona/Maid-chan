@@ -1,0 +1,20 @@
+{
+    "TOKEN": "",
+    "volume": 0.5,
+    "ADMIN": 0,
+    "PREFIX":"",
+    "Pixiv":{
+        "ID":"",
+        "Pass":""
+    },
+    "Lavalink":{
+        "Host":"",
+        "Port":"",
+        "Pass":"",
+        "Region":"",
+        "Node":""
+    },
+    "ServerList": {
+    
+    }
+}
