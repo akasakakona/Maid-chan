@@ -1,10 +1,20 @@
 {
- "TOKEN": "#Your Discord Bot Token",
- "volume": 0.5,
- "PID": "Your Pixiv Email In With Quotation Mark(Optional)",
- "PPASS": "#Your Pixiv Password With Quotation Mark(Optional)",
- "ADMIN": "#Your Discord User ID (without quotation mark on both ends)",
- "ServerList": {
-
- }
+    "TOKEN": "",
+    "volume": 0.5,
+    "ADMIN": 0,
+    "PREFIX":"",
+    "Pixiv":{
+        "ID":"",
+        "Pass":""
+    },
+    "Lavalink":{
+        "Host":"",
+        "Port":"",
+        "Pass":"",
+        "Region":"",
+        "Node":""
+    },
+    "ServerList": {
+    
+    }
 }

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+import os
 
 class Debugging(commands.Cog):
     def __init__(self, maid):
@@ -12,7 +13,8 @@ class Debugging(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.maid.change_presence(status=discord.Status.idle, activity = discord.Game(" with catgirls"))
+        await self.maid.change_presence(status=discord.Status.online, activity = discord.Game(" with catgirls"))
+        self.maid.load_extension(f'extensions.music')
         print(f"Logged in as {self.maid.user.name}")
 
     @commands.command()
@@ -22,9 +24,9 @@ class Debugging(commands.Cog):
     @commands.command(aliases=['off'])
     async def shutdown(self, ctx):
         if(ctx.author.id != self.ADMIN):
-            await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
-            return
+            return await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
         await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
+
         await self.maid.close()
 
 def setup(maid):

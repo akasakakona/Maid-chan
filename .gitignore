@@ -2,6 +2,7 @@
 *.mp3
 config.json
 config1.json
+config2.json
 .vscode/settings.json
 test.py
 *.pyc

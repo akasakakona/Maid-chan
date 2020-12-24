@@ -79,7 +79,7 @@ class Entertainment(commands.Cog):
             config_dict = json.load(f)
             f.close()
         pixivAPI = AppPixivAPI()
-        pixivAPI.login(config_dict['PID'], config_dict['PPASS'])
+        pixivAPI.login(config_dict['Pixiv']['ID'], config_dict['Pixiv']['Pass'])
         result = pixivAPI.search_illust(title)
         if(len(result.illusts) != 0):
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]

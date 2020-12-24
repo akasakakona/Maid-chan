@@ -134,7 +134,21 @@ class Moderation(commands.Cog):
     
     @commands.command()
     async def serverInfo(self, ctx):
-        """send an embed about this server's info"""
+        """FIXME: send an embed about this server's info"""
+
+    @commands.command()
+    async def setMod(self, ctx):
+        with open('config.json') as f:
+            config_dict = json.load(f)
+            f.close()
+        if(ctx.author.id != config_dict["ADMIN"] and ctx.author.id not in config_dict['ServerList'][str(ctx.author.guild.id)]['modList']):
+            await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
+            return
+        for modID in ctx.raw_mentions:
+            config_dict['ServerList'][str(ctx.author.guild.id)]['modList'].append(modID)
+        await ctx.send("Successfully set as mod!")
+        self.modSet(config_dict)
+        return
 
     def modSet(self, data):
         with open('config.json', 'w') as json_file:
