@@ -14,11 +14,10 @@ BUT she is getting better and better with every update!
 
 
 # Dependencies
-- [discord.py[voice]](https://pypi.org/project/discord.py/)
-- [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html)
+- [discord.py[voice]](https://discordpy.readthedocs.io/en/latest/index.html)
 - [pixivpy3](https://pypi.org/project/PixivPy/)
 - [gTTS](https://pypi.org/project/gTTS/)
-- [google-api-python-client](https://pypi.org/project/google-api-python-client/)
+- [lavalink](https://github.com/Devoxin/Lavalink.py)
 
 # Before You Start
 You will need to create a configuration file and name it `config.json`. 
