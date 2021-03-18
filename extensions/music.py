@@ -79,7 +79,7 @@ class Music(commands.Cog):
         # The above looks dirty, we could alternatively use `maid.shards[shard_id].ws` but that assumes
         # the maid instance is an AutoShardedBot.
 
-    @commands.command()
+    @commands.command(aliases=['p'])
     async def play(self, ctx, *, query: str = ""):
         """ Searches and plays a song from a given query. """
         # Get the player for this guild from cache.
