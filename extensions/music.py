@@ -40,9 +40,9 @@ class Music(commands.Cog):
 
         return guild_check
 
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
-            await ctx.send(f"MAID ERROR:{error.original}")
+    # async def cog_command_error(self, ctx, error):
+    #     if isinstance(error, commands.CommandInvokeError):
+    #         await ctx.send(f"MAID ERROR:{error.original)}"
 
     async def ensure_voice(self, ctx):
         """ This check ensures that the maid and command author are in the same voicechannel. """
@@ -87,7 +87,7 @@ class Music(commands.Cog):
         # Remove leading and trailing <>. <> may be used to suppress embedding links in Discord.
 
         if player.paused:
-            return player.set_pause(False) 
+            return await player.set_pause(False) 
         elif not player.paused and query == "":
             return await ctx.send(" MAID ERROR: Correct Usage: !play [query/url]")
 
@@ -175,7 +175,7 @@ class Music(commands.Cog):
             # may not disconnect the maid.
             return await ctx.send('MAID ERROR: You\'re not in my voicechannel!')
         
-        if player.pause:
+        if player.paused:
             #check if the player has been paused already
             return await ctx.send('MAID ERROR: Player already paused!')
         else:
@@ -205,14 +205,12 @@ class Music(commands.Cog):
             return await ctx.send('Not connected.')
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
-            # Abuse prevention. Users not in voice channels, or not in the same voice channel as the maid
-            # may not disconnect the maid.
             return await ctx.send('You\'re not in my voicechannel!')
         if player.shuffle:
-            await player.set_shuffle(False)
+            player.set_shuffle(False)
             return await ctx.send("Player Un-Shuffled!")
         else:
-            await player.set_shuffle(True)
+            player.set_shuffle(True)
             return await ctx.send("Player Shuffled!")
     
     @commands.command()
