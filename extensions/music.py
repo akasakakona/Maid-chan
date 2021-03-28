@@ -225,10 +225,10 @@ class Music(commands.Cog):
             # may not disconnect the maid.
             return await ctx.send('You\'re not in my voicechannel!')
         if player.repeat:
-            await player.set_repeat(False)
+            player.set_repeat(False)
             return await ctx.send('Repeat OFF!')
         else:
-            await player.set_repeat(True)
+            player.set_repeat(True)
             return await ctx.send("Repeat ON!")
 
 
