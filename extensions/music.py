@@ -44,9 +44,9 @@ class Music(commands.Cog):
 
         return guild_check
 
-    # async def cog_command_error(self, ctx, error):
-    #     if isinstance(error, commands.CommandInvokeError):
-    #         await ctx.send(f"MAID ERROR:{error.original)}"
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send(f"MAID ERROR:{error.original}")
 
     async def ensure_voice(self, ctx):
         """ This check ensures that the maid and command author are in the same voicechannel. """
