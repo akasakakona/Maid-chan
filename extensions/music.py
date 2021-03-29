@@ -130,14 +130,11 @@ class Music(commands.Cog):
             for track in tracks:
                 # Add all of the tracks from the playlist to the queue.
                 player.add(requester=ctx.author.id, track=track)
-
-            embed.title = track["info"]["title"]
-            embed.url = track["info"]["uri"]
-            embed.author = track["info"]["author"]
+            embed.title = results["playlistInfo"]["name"]
             if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
-                embed.description = f'Successfully added playlist \"{tracks["playlistInfo"]["name"]}\" into the playlist! {ctx.author.name}-sama!\n This playlist will contain {tracks["playlistInfo"]["selectedTrack"]} songs!'
+                embed.description = f'Successfully added playlist \"{results["playlistInfo"]["name"]}\" into the playlist! {ctx.author.name}-sama!\n***This playlist will contain {len(tracks)} songs!***'
             elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
-                embed.description = f'成功为{ctx.author.name}様将您点播的歌单《{tracks["playlistInfo"]["name"]}》加入歌单！\n这个歌单中包含了：{tracks["playlistInfo"]["selectedTrack"]}首歌！'
+                embed.description = f'成功为{ctx.author.name}様将您点播的歌单《{results["playlistInfo"]["name"]}》加入歌单！\n***这个歌单中包含了：{len(tracks)}首歌！***'
         else:
             track = results['tracks'][0]
             embed.title = track["info"]["title"]
