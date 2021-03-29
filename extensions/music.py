@@ -202,7 +202,7 @@ class Music(commands.Cog):
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             # Abuse prevention. Users not in voice channels, or not in the same voice channel as the maid
             # may not disconnect the maid.
-            return await ctx.send('MAID ERROR: You\'re not in my voicechannel!')
+            return await ctx.send('MAID ERROR: Not in my voicechannel!')
         
         if player.paused:
             #check if the player has been paused already
@@ -222,10 +222,10 @@ class Music(commands.Cog):
     async def skip(self, ctx):
         player = self.maid.lavalink.player_manager.get(ctx.guild.id)
         if not player.is_connected:
-            return await ctx.send('Not connected.')
+            return await ctx.send('MAID ERROR: Not connected!')
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
-            return await ctx.send('You\'re not in my voicechannel!')
+            return await ctx.send('MAID ERROR: Not in my voicechannel!')
         try:
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.title = player.current.title
@@ -245,10 +245,10 @@ class Music(commands.Cog):
         player = self.maid.lavalink.player_manager.get(ctx.guild.id)
         if not player.is_connected:
             # We can't disconnect, if we're not connected.
-            return await ctx.send('Not connected.')
+            return await ctx.send('MAID ERROR: Not connected!')
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
-            return await ctx.send('You\'re not in my voicechannel!')
+            return await ctx.send('MAID ERROR: Not in my voicechannel!')
         if player.shuffle:
             player.set_shuffle(False)
             if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
@@ -267,12 +267,12 @@ class Music(commands.Cog):
         player = self.maid.lavalink.player_manager.get(ctx.guild.id)
         if not player.is_connected:
             # We can't disconnect, if we're not connected.
-            return await ctx.send('Not connected.')
+            return await ctx.send('MAID ERROR: Not connected!')
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             # Abuse prevention. Users not in voice channels, or not in the same voice channel as the maid
             # may not disconnect the maid.
-            return await ctx.send('You\'re not in my voicechannel!')
+            return await ctx.send('MAID ERROR: Not in my voicechannel!')
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.title = player.current.title
         embed.url = player.current.uri
