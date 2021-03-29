@@ -1,6 +1,10 @@
 """
 Class Definition for Lavalink.py can be found here:
 https://github.com/Devoxin/Lavalink.py/blob/master/lavalink/models.py
+Documentation for Lavalink.py:
+https://lavalink.readthedocs.io/en/latest/lavalink.html
+Implementation information for Lavalink can be found here:
+https://github.com/Frederikam/Lavalink/blob/master/IMPLEMENTATION.md                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 """
 import re
 
@@ -16,9 +20,9 @@ class Music(commands.Cog):
     def __init__(self, maid):
         self.maid = maid
         with open('config.json') as f:
-            self.config = json.load(f)
+            self.config_dict = json.load(f)
             f.close()
-        self.config = self.config['Lavalink']
+        self.config = self.config_dict['Lavalink']
         if not hasattr(maid, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
             maid.lavalink = lavalink.Client(self.maid.user.id)
             maid.lavalink.add_node(self.config['Host'], self.config['Port'], self.config['Pass'], self.config['Region'], self.config['Node'])  # Host, Port, Password, Region, Name
@@ -79,6 +83,12 @@ class Music(commands.Cog):
         # The above looks dirty, we could alternatively use `maid.shards[shard_id].ws` but that assumes
         # the maid instance is an AutoShardedBot.
 
+    def msToHrMinSec(self, ms):
+        sec = (ms//1000)%60
+        minute = (ms//(1000*60))%60
+        hr = (ms//(1000*60*60))%24
+        return (hr, minute, sec)
+
     @commands.command(aliases=['p'])
     async def play(self, ctx, *, query: str = ""):
         """ Searches and plays a song from a given query. """
@@ -106,7 +116,7 @@ class Music(commands.Cog):
         if not results or not results['tracks']:
             return await ctx.send('Nothing found!')
 
-        embed = discord.Embed(color=discord.Color.blurple())
+        embed = discord.Embed(color=discord.Color.dark_red())
 
         # Valid loadTypes are:
         #   TRACK_LOADED    - single video/direct URL)
@@ -121,13 +131,29 @@ class Music(commands.Cog):
                 # Add all of the tracks from the playlist to the queue.
                 player.add(requester=ctx.author.id, track=track)
 
-            embed.title = 'Playlist Enqueued!'
-            embed.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
+            embed.title = track["info"]["title"]
+            embed.url = track["info"]["uri"]
+            embed.author = track["info"]["author"]
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f'Successfully added playlist \"{tracks["playlistInfo"]["name"]}\" into the playlist! {ctx.author.name}-sama!\n This playlist will contain {tracks["playlistInfo"]["selectedTrack"]} songs!'
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f'成功为{ctx.author.name}様将您点播的歌单《{tracks["playlistInfo"]["name"]}》加入歌单！\n这个歌单中包含了：{tracks["playlistInfo"]["selectedTrack"]}首歌！'
         else:
             track = results['tracks'][0]
-            embed.title = 'Track Enqueued'
-            embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+            embed.title = track["info"]["title"]
+            embed.url = track["info"]["uri"]
+            embed.set_author(name=track["info"]["author"])
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f'Playing \"{track["info"]["title"]}\" for you right now! {ctx.author.name}-sama!\n'
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f'成功为{ctx.author.name}様播放《{track["info"]["title"]}》！\n'
 
+            if(track["info"]["isStream"] and self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description += f"***啊啊啊！！{ctx.author.name}様又在DD！ぷんぷん！！女仆酱我要吃醋了哦！***"
+            elif(not track["info"]["isStream"]):
+                length = track["info"]["length"]
+                duration = self.msToHrMinSec(ms=length)
+                embed.description += f"***Duration: {duration[0]}:{duration[1]}:{duration[2]}***"
             # You can attach additional information to audiotracks through kwargs, however this involves
             # constructing the AudioTrack class yourself.
             track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
@@ -161,7 +187,10 @@ class Music(commands.Cog):
         await player.stop()
         # Disconnect from the voice channel.
         await self.connect_to(ctx.guild.id, None)
-        await ctx.send('*⃣ | Disconnected.')
+        if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+            await ctx.send(f"Successfully disconnected for you! {ctx.author.name}-sama!")
+        elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+            await ctx.send(f"成功为您断开连接！{ctx.author.name}様！")
 
     @commands.command()
     async def pause(self, ctx):
@@ -180,7 +209,14 @@ class Music(commands.Cog):
             return await ctx.send('MAID ERROR: Player already paused!')
         else:
             await player.set_pause(True)
-            return await ctx.send('Audio Paused!')
+            embed = discord.Embed(color=discord.Color.dark_red())
+            embed.title = player.current.title
+            embed.url = player.current.uri
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f"Successfully paused\"{player.current.title}\" for you! {ctx.author.name}-sama!"
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f"成功为您暂停了《{player.current.title}》！{ctx.author.name}様！"
+            await ctx.send(embed)
 
     @commands.command()
     async def skip(self, ctx):
@@ -190,10 +226,17 @@ class Music(commands.Cog):
 
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             return await ctx.send('You\'re not in my voicechannel!')
-
         try:
+            embed = discord.Embed(color=discord.Color.dark_red())
+            embed.title = player.current.title
+            embed.url = player.current.uri
+            embed.set_author(name=player.current.author)
             await player.skip()
-            return await ctx.send("Skipped current song!")
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f"Successfully skipped\"{player.current.title}\" for you! {ctx.author.name}-sama!"
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f"成功为您跳过了《{player.current.title}》！{ctx.author.name}様！"
+            return await ctx.send(embed=embed)
         except:
             return await ctx.send("MAID ERROR: Failed to skip!")
 
@@ -208,10 +251,16 @@ class Music(commands.Cog):
             return await ctx.send('You\'re not in my voicechannel!')
         if player.shuffle:
             player.set_shuffle(False)
-            return await ctx.send("Player Un-Shuffled!")
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                await ctx.send(f"Successfully un-shuffled the playlist for you! {ctx.author.name}-sama!")
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                await ctx.send(f"成功为您关闭了随机播放！{ctx.author.name}様！")
         else:
             player.set_shuffle(True)
-            return await ctx.send("Player Shuffled!")
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                await ctx.send(f"Successfully shuffled the playlist for you! {ctx.author.name}-sama!")
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                await ctx.send(f"成功为您开启了随机播放！{ctx.author.name}様！")
     
     @commands.command()
     async def loop(self, ctx):
@@ -224,12 +273,23 @@ class Music(commands.Cog):
             # Abuse prevention. Users not in voice channels, or not in the same voice channel as the maid
             # may not disconnect the maid.
             return await ctx.send('You\'re not in my voicechannel!')
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.title = player.current.title
+        embed.url = player.current.uri
+        embed.set_author(name=player.current.author)
         if player.repeat:
             player.set_repeat(False)
-            return await ctx.send('Repeat OFF!')
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f"I will stop looping \"{player.current.title}\" for you! {ctx.author.name}-sama!"
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f"成功为您关闭了《{player.current.title}》的洗脑循环！{ctx.author.name}様！"
         else:
             player.set_repeat(True)
-            return await ctx.send("Repeat ON!")
+            if(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
+                embed.description = f"I will start looping \"{player.current.title}\" for you! {ctx.author.name}-sama!"
+            elif(self.config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
+                embed.description = f"成功为您开启了《{player.current.title}》的洗脑循环！{ctx.author.name}様！"
+        await ctx.send(embed=embed)
 
 
 def setup(maid):
