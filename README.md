@@ -24,6 +24,8 @@ You will need to create a configuration file and name it `config.json`.
 
 For more information on formatting of the json file, see: `Sample Config.json`.
 
+Because Pixiv no longer allows password authentication, Maid-chan has moved to `TOKEN` authentication as a temporary login method. Please refer to [this method](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362) provided by @ZipFile to get your `TOKEN`! Thank you so much for your contribution!
+
 # Current Version
 1.1.0
 
