@@ -74,23 +74,34 @@ class Entertainment(commands.Cog):
         voice.source.volume = config_dict['volume']
     
     @commands.command(aliases=['色图'])
-    async def picSearch(self, ctx, title:str):
+    async def picSearch(self, ctx, title:str=""):
         with open('config.json') as f:
             config_dict = json.load(f)
             f.close()
         pixivAPI = AppPixivAPI()
         # pixivAPI.login(config_dict['Pixiv']['ID'], config_dict['Pixiv']['Pass'])
         pixivAPI.auth(refresh_token=config_dict['Pixiv']['TOKEN'])
-        result = pixivAPI.search_illust(title)
+        if(title == ""):
+            result = pixivAPI.illust_ranking('day_male')
+        elif(title == "r18"):
+            result = pixivAPI.illust_ranking('day_male_r18')
+        else:
+            result = pixivAPI.search_illust(title, sort="popular_desc",search_target='title_and_caption')
+        embed = discord.Embed(color=discord.Color.dark_red())
         if(len(result.illusts) != 0):
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
             imagePresent = os.path.isfile(f'illust.jpg')
             if(imagePresent):
                 os.remove(f'illust.jpg')
             pixivAPI.download(illust.image_urls.large, fname=f'illust.jpg')
-            await ctx.send(content = f"Title: {illust.title}", file=discord.File(f'illust.jpg'))
+            embed.title = illust.title
+            embed.url = f"https://www.pixiv.net/artworks/{illust.id}"
+            embed.set_image(url="attachment://illust.jpg")
+            embed.set_author(name=illust.user.name, url=f"https://www.pixiv.net/users/{illust.user.id}")
+            await ctx.send(embed=embed, file=discord.File(f'illust.jpg'))
         else:
-            await ctx.send("Image can\'t be found! 无法找到图片！")
+            embed.title = "Image can\'t be found! 无法找到图片！"
+            await ctx.send(embed=embed)
     
 
 def setup(maid):
