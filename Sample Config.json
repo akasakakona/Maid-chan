@@ -4,8 +4,7 @@
     "ADMIN": 0,
     "PREFIX":"",
     "Pixiv":{
-        "ID":"",
-        "Pass":""
+        "TOKEN":""
     },
     "Lavalink":{
         "Host":"",
