@@ -80,13 +80,25 @@ class Entertainment(commands.Cog):
             f.close()
         pixivAPI = AppPixivAPI()
         # pixivAPI.login(config_dict['Pixiv']['ID'], config_dict['Pixiv']['Pass'])
-        pixivAPI.auth(refresh_token=config_dict['Pixiv']['TOKEN'])
+        try:
+            pixivAPI.auth(refresh_token=config_dict['Pixiv']['TOKEN'])
+        except:
+            return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
         if(title == ""):
-            result = pixivAPI.illust_ranking('day_male')
+            try:
+                result = pixivAPI.illust_ranking('day_male')
+            except:
+                return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
         elif(title == "r18"):
-            result = pixivAPI.illust_ranking('day_male_r18')
+            try:
+                result = pixivAPI.illust_ranking('day_male_r18')
+            except:
+                return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
         else:
-            result = pixivAPI.search_illust(title, sort="popular_desc",search_target='title_and_caption')
+            try:
+                result = pixivAPI.search_illust(title, sort="popular_desc",search_target='title_and_caption')
+            except:
+                return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
         embed = discord.Embed(color=discord.Color.dark_red())
         if(len(result.illusts) != 0):
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
