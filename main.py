@@ -1,4 +1,4 @@
-from MaidChan import MaidChan
+from Maid import Maid
 
 
-MaidChan.instance()
+Maid.instance()

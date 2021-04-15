@@ -2,7 +2,7 @@ import discord
 import os
 import json
 from discord.ext import commands
-import MaidChan
+from MaidChan import MaidChan
 
 
 class Maid(commands.Bot):
@@ -11,7 +11,7 @@ class Maid(commands.Bot):
     @staticmethod
     def instance():
         if Maid.__instance is None:
-            Maid.__instance = MaidChan.MaidChan()
+            Maid.__instance = MaidChan()
         return Maid.__instance
 
     @staticmethod
