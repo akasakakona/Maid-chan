@@ -9,5 +9,11 @@ class Maid(commands.Bot):
     def instance():
         if Maid.__instance is None:
             print("Maid Chan instance is None, creating instance")
-            Maid.__instance = MaidChan()
+            Maid()
         return Maid.__instance
+
+    def __init__(self):
+        if Maid.__instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            Maid.__instance = MaidChan()
