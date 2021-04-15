@@ -24,10 +24,14 @@ class MaidChan(commands.Bot):
 
     def load_extensions(self):
         for extension in os.listdir('./extensions'):  # load extensions
-            #if extension.endswith('.py') and extension != "music.py":
-            if extension == "debugging.py":
-                self.load_extension(f'extensions.{extension[:-3]}')
-        #super().load_extension("./extensions/debugging", package=)
+            if extension.endswith('.py'):
+                try:
+                    extension = f"extensions.{extension.replace('.py', '')}"
+                    super().load_extension(f'extensions.{extension[:-3]}')
+                except Exception as e:
+                    print(f"{extension} Could not be loaded!")
+                else:
+                    print("{} has been loaded".format(extension))
         pass
 
     def run(self):
