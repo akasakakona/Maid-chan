@@ -13,17 +13,3 @@ class Maid(commands.Bot):
         if Maid.__instance is None:
             Maid.__instance = MaidChan()
         return Maid.__instance
-
-    @staticmethod
-    def run():
-        if Maid.instance() is MaidChan:
-            Maid.instance().run()
-        pass
-
-    @staticmethod
-    def get_token():
-        return Maid.instance().TOKEN
-
-    @staticmethod
-    def get_prefix():
-        return Maid.instance().PREFIX

@@ -19,6 +19,7 @@ class MaidChan(commands.Bot):
         # Create the bot
         super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
         #self.load_extensions()
+        print("Maid-Chan Created")
         pass
 
     def load_extensions(self):
@@ -28,6 +29,7 @@ class MaidChan(commands.Bot):
         pass
 
     def run(self):
+        print("Starting Maid Chan " + self.is_closed() + " " + self.is_ready())
         super().run(self.TOKEN)
         pass
 
