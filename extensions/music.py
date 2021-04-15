@@ -12,14 +12,13 @@ import discord
 import lavalink
 from discord.ext import commands
 import json
-from Maid import Maid
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
 class Music(commands.Cog):
     def __init__(self, maid):
-        self.maid = Maid.instance()
+        self.maid = maid
         with open('config.json') as f:
             self.config_dict = json.load(f)
             f.close()

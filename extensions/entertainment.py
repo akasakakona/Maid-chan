@@ -6,13 +6,12 @@ from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
-from Maid import Maid
 
 random.seed(time.time())
 
 class Entertainment(commands.Cog):
     def __init__(self, maid):
-        self.maid = Maid.instance()
+        self.maid = maid.instance()
         self.bullets = [0, 0, 0, 0, 0, 0]
         self.shotCounter = 0
 

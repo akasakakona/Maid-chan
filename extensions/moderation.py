@@ -3,7 +3,6 @@ import json
 import discord
 import discord.utils
 from discord.ext import commands
-from Maid import Maid
 
 
 class Server:
@@ -17,7 +16,7 @@ class Server:
 
 class Moderation(commands.Cog):
     def __init__(self, maid):
-        self.maid = Maid.instance()
+        self.maid = maid
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

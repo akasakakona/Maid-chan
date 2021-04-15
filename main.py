@@ -1,4 +1,5 @@
 from Maid import Maid
+from MaidChan import MaidChan
 
 
-Maid.instance().run()
+MaidChan.instance().run()
