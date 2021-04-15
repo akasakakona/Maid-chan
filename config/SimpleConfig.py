@@ -1,3 +1,4 @@
+import json
 from MaidChan import MaidChan
 
 
@@ -10,6 +11,7 @@ class SimpleConfig:
         try:
             self.file = open(path)
             self.config = json.load(self.file)
+            MaidChan.log("Loaded SimpleConfig \'{path}\'")
         except FileNotFoundError:
             MaidChan.log(f"MAID ERROR: path \'{path}\' NOT FOUND")
         pass

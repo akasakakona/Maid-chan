@@ -1,3 +1,3 @@
-from ConfigManager import ConfigManager
+from config.ConfigManager import ConfigManager
 
 ConfigManager.instance()

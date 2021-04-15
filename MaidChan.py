@@ -1,9 +1,7 @@
 import discord
 import os
-import json
 from discord.ext import commands
-import config
-from ConfigManager import ConfigManager
+from config.ConfigManager import ConfigManager
 
 
 class MaidChan(commands.Bot):

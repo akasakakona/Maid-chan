@@ -1,4 +1,4 @@
-from SimpleConfig import SimpleConfig
+from config.SimpleConfig import SimpleConfig
 
 
 class ConfigManager:
@@ -26,5 +26,5 @@ class ConfigManager:
     def get_global_config(self):
         return self.__global_config
 
-    def get_server_config(self, id):
-        return self.__server_configs[id]
+    def get_server_config(self, server_id):
+        return self.__server_configs[server_id]
