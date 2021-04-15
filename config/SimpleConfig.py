@@ -1,9 +1,8 @@
 import json
-import MaidChan
+from ..MaidChan import MaidChan
 
 
 class SimpleConfig:
-
     file = None
     config = None
 
