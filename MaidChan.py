@@ -19,7 +19,7 @@ class MaidChan(commands.Bot):
             print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY: {os.getcwd()}")
         # Create the bot
         super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
-        self.load_extensions()
+        #self.load_extensions()
         self.run()
         pass
 
