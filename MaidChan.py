@@ -2,6 +2,8 @@ import discord
 import os
 import json
 from discord.ext import commands
+import config
+from ConfigManager import ConfigManager
 
 
 class MaidChan(commands.Bot):
@@ -25,13 +27,8 @@ class MaidChan(commands.Bot):
             raise Exception("MaidChan is a singleton!")
         else:
             MaidChan.__instance = self
-            try:
-                with open('config.json') as f:
-                    config_dict = json.load(f)
-                self.TOKEN = config_dict['TOKEN']
-                self.PREFIX = config_dict['PREFIX']
-            except FileNotFoundError:
-                print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY: {os.getcwd()}")
+            self.TOKEN = ConfigManager.get_global_config().get("TOKEN")
+            self.PREFIX = ConfigManager.get_global_config().get("PREFIX")
             # Create the bot
             super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
             self.load_extensions()
