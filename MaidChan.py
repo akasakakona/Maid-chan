@@ -25,13 +25,12 @@ class MaidChan(commands.Bot):
     def load_extensions(self):
         for extension in os.listdir('./extensions'):  # load extensions
             if extension.endswith('.py'):
-                try:
+                #try:
                     super().load_extension(f'extensions.{extension[:-3]}')
-                except Exception as e:
+                #except Exception as e:
                     print(f"{extension} Could not be loaded!")
-                    print(e.__class__.__str__())
                     print()
-                else:
+                #else:
                     print("{} has been loaded".format(extension))
         pass
 
