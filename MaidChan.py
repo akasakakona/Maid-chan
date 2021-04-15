@@ -2,6 +2,7 @@ import discord
 import os
 import json
 from discord.ext import commands
+import traceback
 
 
 class MaidChan(commands.Bot):
@@ -30,7 +31,7 @@ class MaidChan(commands.Bot):
                     super().load_extension(f'extensions.{extension[:-3]}')
                 except Exception as e:
                     print(f"{extension} Could not be loaded!")
-                    print(e.__traceback__.__str__())
+                    traceback.print_exc()
                 else:
                     print("{} has been loaded".format(extension))
         pass
