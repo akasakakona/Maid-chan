@@ -18,18 +18,20 @@ class MaidChan(commands.Bot):
             print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY: {os.getcwd()}")
         # Create the bot
         super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
-        # self.load_extensions()
+        self.load_extensions()
         print("Maid-Chan Created")
         pass
 
     def load_extensions(self):
         for extension in os.listdir('./extensions'):  # load extensions
-            if extension.endswith('.py') and extension != "music.py":
-                self.load_extension(f'extensions.{extension[:-3]}')
+            #if extension.endswith('.py') and extension != "music.py":
+            #    self.load_extension(f'extensions.{extension[:-3]}')
+            if extension == "debugging.py":
+                self.loadExtension(f'extensions.{extension[:-3]}')
         pass
 
     def run(self):
-        print("Starting Maid Chan " + self.is_closed().__str__() + " " + self.is_ready().__str__())
+        print("Starting Maid Chan")
         super().run(self.TOKEN)
         pass
 
