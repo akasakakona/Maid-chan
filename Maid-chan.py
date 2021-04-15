@@ -1,4 +1,5 @@
 import MaidChan
 
 
-maid = MaidChan
+maid = MaidChan()
+maid.run()
