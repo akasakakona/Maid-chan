@@ -29,7 +29,7 @@ class MaidChan(commands.Bot):
         pass
 
     def run(self):
-        print("Starting Maid Chan " + self.is_closed() + " " + self.is_ready())
+        print("Starting Maid Chan " + self.is_closed().__str__() + " " + self.is_ready().__str__())
         super().run(self.TOKEN)
         pass
 
