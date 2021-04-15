@@ -11,13 +11,13 @@ class MaidChan(commands.Bot):
 
     @staticmethod
     def instance():
-        if MaidChan.__instance == None:
+        if MaidChan.__instance is None:
             print("Maid Chan instance is None, creating instance")
             MaidChan()
         return MaidChan.__instance
 
     def __init__(self):
-        if MaidChan.__instance != None:
+        if MaidChan.__instance is not None:
             raise Exception("MaidChan is a singleton!")
         else:
             MaidChan.__instance = self
@@ -30,8 +30,7 @@ class MaidChan(commands.Bot):
                 print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY: {os.getcwd()}")
             # Create the bot
             super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
-            super().load_extension('extensions.debugging')
-            #self.load_extensions()
+            self.load_extensions()
             print("Maid-Chan Created")
             pass
 
