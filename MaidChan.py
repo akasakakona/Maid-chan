@@ -16,6 +16,10 @@ class MaidChan(commands.Bot):
             MaidChan()
         return MaidChan.__instance
 
+    @staticmethod
+    def log(message):
+        print("[Maid-Chan] " + message)
+
     def __init__(self):
         if MaidChan.__instance is not None:
             raise Exception("MaidChan is a singleton!")

@@ -1,3 +1,4 @@
+from SimpleConfig import SimpleConfig
 
 
 class ConfigManager:
@@ -11,7 +12,6 @@ class ConfigManager:
             ConfigManager()
         return ConfigManager.__instance
 
-    __global_file = None
     __global_config = None
     __server_configs = dict()
 
@@ -20,10 +20,11 @@ class ConfigManager:
             raise Exception("ConfigManager is a singleton!")
         else:
             ConfigManager.__instance = self
-            try:
-                __global_file = open('config.json')
-                with open('config.json') as f:
-                    __global_config = json.load(f)
-            except FileNotFoundError:
-                print(f"MAID ERROR: \'config.json\' NOT FOUND UNDER CURRENT DIRECTORY: {os.getcwd()}")
+            __global_config = SimpleConfig("config.json")
         pass
+
+    def get_global_config(self):
+        return self.__global_config
+
+    def get_server_config(self, id):
+        return self.__server_configs[id]
