@@ -8,3 +8,4 @@ test.py
 *.pyc
 jsontestread.py
 data.py
+*.xml
