@@ -24,10 +24,8 @@ class MaidChan(commands.Bot):
 
     def load_extensions(self):
         for extension in os.listdir('./extensions'):  # load extensions
-            #if extension.endswith('.py') and extension != "music.py":
-            #    self.load_extension(f'extensions.{extension[:-3]}')
-            if extension == "debugging.py":
-                self.loadExtension(f'extensions.{extension[:-3]}')
+            if extension.endswith('.py') and extension != "music.py":
+                super().load_extension(f'extensions.{extension[:-3]}')
         pass
 
     def run(self):
