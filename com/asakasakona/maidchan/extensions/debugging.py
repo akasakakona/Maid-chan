@@ -2,7 +2,7 @@ import json
 
 import discord
 from discord.ext import commands
-from MaidChan import MaidChan
+from ..core.MaidChan import MaidChan
 
 
 class Debugging(commands.Cog):

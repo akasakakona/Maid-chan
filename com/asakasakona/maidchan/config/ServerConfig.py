@@ -1,4 +1,4 @@
-from config.SimpleConfig import SimpleConfig
+from .SimpleConfig import SimpleConfig
 
 
 class ServerConfig(SimpleConfig):

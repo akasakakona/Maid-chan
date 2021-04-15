@@ -1,4 +1,5 @@
-from config.SimpleConfig import SimpleConfig
+from .SimpleConfig import SimpleConfig
+from .. core import Util
 
 
 class ConfigManager:
@@ -8,20 +9,27 @@ class ConfigManager:
     @staticmethod
     def instance():
         if ConfigManager.__instance is None:
-            print("ConfigManager instance is None, creating instance")
+            Util.log("ConfigManager instance is None, creating instance")
             ConfigManager()
         return ConfigManager.__instance
-
-    __global_config = None
-    __server_configs = dict()
 
     def __init__(self):
         if ConfigManager.__instance is not None:
             raise Exception("ConfigManager is a singleton!")
         else:
             ConfigManager.__instance = self
-            __global_config = SimpleConfig("config.json")
+            self.load()
         pass
+
+    __global_config = None
+    __server_configs = dict()
+
+    def load(self):
+        self.load_global()
+
+    def load_global(self):
+        self.__global_config = SimpleConfig("config.json")
+        Util.log("Loaded " + self.__global_config.file.name)
 
     @staticmethod
     def get_global_config():

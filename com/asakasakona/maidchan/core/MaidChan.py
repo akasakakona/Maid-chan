@@ -1,7 +1,8 @@
 import discord
 import os
 from discord.ext import commands
-from config.ConfigManager import ConfigManager
+from ..config.ConfigManager import ConfigManager
+from . import Util
 
 
 class MaidChan(commands.Bot):
@@ -16,22 +17,19 @@ class MaidChan(commands.Bot):
             MaidChan()
         return MaidChan.__instance
 
-    @staticmethod
-    def log(message):
-        print("[Maid-Chan] " + message)
-
     def __init__(self):
         if MaidChan.__instance is not None:
             raise Exception("MaidChan is a singleton!")
         else:
             MaidChan.__instance = self
+            ConfigManager.instance()
             self.TOKEN = ConfigManager.get_global_config().get("TOKEN")
             self.PREFIX = ConfigManager.get_global_config().get("PREFIX")
-            self.log(self.TOKEN + " " + self.PREFIX)
+            Util.log(self.TOKEN + " " + self.PREFIX)
             # Create the bot
             super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
             self.load_extensions()
-            print("Maid-Chan Created")
+            Util.log("Maid-Chan Created")
             pass
 
     def load_extensions(self):
@@ -40,13 +38,14 @@ class MaidChan(commands.Bot):
                 try:
                     super().load_extension(f'extensions.{extension[:-3]}')
                 except Exception as e:
-                    print(f"{extension} Could not be loaded!")
-                    print()
+                    Util.log(f"{extension} Could not be loaded!")
+                    Util.log()
                 else:
-                    print("{} has been loaded".format(extension))
+                    Util.log("{} has been loaded".format(extension))
         pass
 
-    def run(self):
-        print("Starting Maid Chan")
-        super().run(self.TOKEN)
+    @staticmethod
+    def run():
+        Util.log("Starting Maid Chan")
+        super(MaidChan.instance()).run(MaidChan.__TOKEN)
         pass
