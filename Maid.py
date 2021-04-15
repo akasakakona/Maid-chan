@@ -1,6 +1,3 @@
-import discord
-import os
-import json
 from discord.ext import commands
 from MaidChan import MaidChan
 
