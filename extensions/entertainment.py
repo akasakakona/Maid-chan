@@ -6,12 +6,13 @@ from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
+from MaidChan import MaidChan
 
 random.seed(time.time())
 
 class Entertainment(commands.Cog):
     def __init__(self, maid):
-        self.maid = maid.instance()
+        self.maid = MaidChan.instance()
         self.bullets = [0, 0, 0, 0, 0, 0]
         self.shotCounter = 0
 
