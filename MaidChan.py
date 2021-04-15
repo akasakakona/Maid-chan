@@ -12,7 +12,7 @@ class MaidChan(commands.Bot):
     @staticmethod
     def instance():
         if MaidChan.__instance is None:
-            print("Maid Chan instance is None, creating instance")
+            print("MaidChan instance is None, creating instance")
             MaidChan()
         return MaidChan.__instance
 
