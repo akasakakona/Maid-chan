@@ -16,7 +16,8 @@ class Maid(commands.Bot):
 
     @staticmethod
     def run():
-        Maid.instance().run()
+        if Maid.instance().is_closed():
+            Maid.instance().run()
         pass
 
     @staticmethod
