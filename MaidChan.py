@@ -20,7 +20,7 @@ class MaidChan(commands.Bot):
         if MaidChan.__instance != None:
             raise Exception("MaidChan is a singleton!")
         else:
-            MaidChan.__instance = MaidChan()
+            MaidChan.__instance = self
             try:
                 with open('config.json') as f:
                     config_dict = json.load(f)
