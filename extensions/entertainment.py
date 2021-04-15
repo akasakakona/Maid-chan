@@ -6,7 +6,7 @@ from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
-import MaidChan
+from MaidChan import MaidChan
 
 random.seed(time.time())
 

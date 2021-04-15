@@ -3,7 +3,7 @@ import json
 import discord
 import discord.utils
 from discord.ext import commands
-import MaidChan
+from MaidChan import MaidChan
 
 
 class Server:

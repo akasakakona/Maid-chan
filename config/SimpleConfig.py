@@ -1,5 +1,5 @@
 import json
-import MaidChan
+from MaidChan import MaidChan
 
 
 class SimpleConfig:

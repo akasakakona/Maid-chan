@@ -50,14 +50,3 @@ class MaidChan(commands.Bot):
         print("Starting Maid Chan")
         super().run(self.TOKEN)
         pass
-
-
-def instance():
-    return MaidChan.instance()
-    pass
-
-
-@property
-def log(message):
-    MaidChan.log(message)
-    pass
