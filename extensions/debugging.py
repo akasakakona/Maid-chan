@@ -7,7 +7,7 @@ from MaidChan import MaidChan
 
 class Debugging(commands.Cog):
     def __init__(self, maid):
-        self.maid = MaidChan.instance()
+        self.maid = maid
         with open('config.json') as f:
             config_dict = json.load(f)
             self.ADMIN = config_dict['ADMIN']

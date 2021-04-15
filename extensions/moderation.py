@@ -17,7 +17,7 @@ class Server:
 
 class Moderation(commands.Cog):
     def __init__(self, maid):
-        self.maid = MaidChan.instance()
+        self.maid = maid
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
