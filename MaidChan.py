@@ -57,6 +57,7 @@ def instance():
     pass
 
 
+@property
 def log(message):
     MaidChan.log(message)
     pass
