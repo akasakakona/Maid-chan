@@ -11,7 +11,7 @@ from Maid import Maid
 random.seed(time.time())
 
 class Entertainment(commands.Cog):
-    def __init__(self):
+    def __init__(self, maid):
         self.maid = Maid.instance()
         self.bullets = [0, 0, 0, 0, 0, 0]
         self.shotCounter = 0

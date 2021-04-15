@@ -18,7 +18,7 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
 class Music(commands.Cog):
-    def __init__(self):
+    def __init__(self, maid):
         self.maid = Maid.instance()
         with open('config.json') as f:
             self.config_dict = json.load(f)
