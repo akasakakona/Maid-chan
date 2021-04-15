@@ -27,7 +27,7 @@ class MaidChan(commands.Bot):
         for extension in os.listdir('./extensions'):  # load extensions
             if extension.endswith('.py'):
                 try:
-                    extension = f"extensions.{extension.replace('.py', '')}"
+                    extension = f"{extension.replace('.py', '')}"
                     super().load_extension(f'extensions.{extension[:-3]}')
                 except Exception as e:
                     print(f"{extension} Could not be loaded!")
