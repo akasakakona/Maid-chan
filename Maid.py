@@ -8,5 +8,6 @@ class Maid(commands.Bot):
     @staticmethod
     def instance():
         if Maid.__instance is None:
+            print("Maid Chan instance is None, creating instance")
             Maid.__instance = MaidChan()
         return Maid.__instance
