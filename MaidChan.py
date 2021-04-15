@@ -30,7 +30,7 @@ class MaidChan(commands.Bot):
                     super().load_extension(f'extensions.{extension[:-3]}')
                 except Exception as e:
                     print(f"{extension} Could not be loaded!")
-                    traceback.print_exc()
+                    traceback.print_last()
                 else:
                     print("{} has been loaded".format(extension))
         pass
