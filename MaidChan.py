@@ -20,6 +20,10 @@ class MaidChan(commands.Bot):
     def log(message):
         print("[Maid-Chan] " + message)
 
+    @classmethod
+    def clog(cls, message):
+        print("C[Maid-Chan] " + message)
+
     def __init__(self):
         if MaidChan.__instance is not None:
             raise Exception("MaidChan is a singleton!")
@@ -50,3 +54,8 @@ class MaidChan(commands.Bot):
         print("Starting Maid Chan")
         super().run(self.TOKEN)
         pass
+
+
+def log(param):
+    print("F[Maid-Chan] " + param)
+    return None
