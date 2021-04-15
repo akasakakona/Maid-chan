@@ -12,7 +12,7 @@ random.seed(time.time())
 
 class Entertainment(commands.Cog):
     def __init__(self, maid):
-        self.maid = maid
+        self.maid = MaidChan.instance()
         self.bullets = [0, 0, 0, 0, 0, 0]
         self.shotCounter = 0
 
