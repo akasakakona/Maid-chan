@@ -1,8 +1,9 @@
 import json
+
 import discord
-from discord.ext import commands
 import discord.utils
-import os
+from discord.ext import commands
+
 
 class Server:
     def __init__(self, guildID):

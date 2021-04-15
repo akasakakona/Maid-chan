@@ -4,7 +4,6 @@ import random
 import json
 from gtts import gTTS
 import os
-import pixivpy3
 from pixivpy3 import AppPixivAPI
 import time
 
@@ -16,16 +15,16 @@ class Entertainment(commands.Cog):
         self.bullets = [0, 0, 0, 0, 0, 0]
         self.shotCounter = 0
 
-    
+
     @commands.command(brief = "Play Russian Roulette with your friends!")
     async def RR(self, ctx):
         with open('config.json') as f:
             config_dict = json.load(f)
             f.close()
-        if(self.shotCounter == 0):
+        if self.shotCounter == 0:
             self.bullets.insert(random.randint(0, 6), 1)
 
-        if(self.bullets[0] == 1):
+        if self.bullets[0] == 1:
             self.shotCounter += 1
             if(config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "en"):
                 await ctx.send(f"OOF, {ctx.author.name} is dead! The chance of this happening is {round((self.shotCounter / 7.0)*100)}%!")
@@ -40,7 +39,7 @@ class Entertainment(commands.Cog):
                 await ctx.send(f"Congrats! {ctx.author.name} is still alive!")
             elif(config_dict['ServerList'][str(ctx.message.guild.id)]['lang'] == "cn"):
                 await ctx.send(f"恭喜! {ctx.author.name}还活着!")
-    
+
     @commands.command()
     async def say(self, ctx, language:str):
         with open('config.json') as f:
@@ -72,7 +71,7 @@ class Entertainment(commands.Cog):
         voice.play(discord.FFmpegPCMAudio("tts.mp3"))
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = config_dict['volume']
-    
+
     @commands.command(aliases=['色图'])
     async def picSearch(self, ctx, title:str=""):
         with open('config.json') as f:
@@ -114,7 +113,7 @@ class Entertainment(commands.Cog):
         else:
             embed.title = "Image can\'t be found! 无法找到图片！"
             await ctx.send(embed=embed)
-    
+
 
 def setup(maid):
     maid.add_cog(Entertainment(maid))

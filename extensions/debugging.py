@@ -1,7 +1,8 @@
+import json
+
 import discord
 from discord.ext import commands
-import json
-import os
+
 
 class Debugging(commands.Cog):
     def __init__(self, maid):
