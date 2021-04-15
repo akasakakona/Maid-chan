@@ -9,3 +9,4 @@ test.py
 jsontestread.py
 data.py
 *.xml
+/.idea
