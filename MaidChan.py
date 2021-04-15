@@ -11,13 +11,13 @@ class MaidChan(commands.Bot):
 
     @staticmethod
     def instance():
-        if MaidChan.__instance is not MaidChan:
+        if MaidChan.__instance == None:
             print("Maid Chan instance is None, creating instance")
             MaidChan()
         return MaidChan.__instance
 
     def __init__(self):
-        if MaidChan.__instance is MaidChan:
+        if MaidChan.__instance != None:
             raise Exception("MaidChan is a singleton!")
         else:
             MaidChan.__instance = MaidChan()
