@@ -23,8 +23,10 @@ class ConfigManager:
             __global_config = SimpleConfig("config.json")
         pass
 
-    def get_global_config(self):
-        return self.__global_config
+    @staticmethod
+    def get_global_config():
+        return ConfigManager.__global_config
 
-    def get_server_config(self, server_id):
-        return self.__server_configs[server_id]
+    @staticmethod
+    def get_server_config(server_id):
+        return ConfigManager.__server_configs[server_id]

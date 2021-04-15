@@ -27,6 +27,7 @@ class MaidChan(commands.Bot):
             MaidChan.__instance = self
             self.TOKEN = ConfigManager.get_global_config().get("TOKEN")
             self.PREFIX = ConfigManager.get_global_config().get("PREFIX")
+            self.log(self.TOKEN + " " + self.PREFIX)
             # Create the bot
             super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
             self.load_extensions()
@@ -49,9 +50,3 @@ class MaidChan(commands.Bot):
         print("Starting Maid Chan")
         super().run(self.TOKEN)
         pass
-
-    def get_token(self):
-        return self.TOKEN
-
-    def get_prefix(self):
-        return self.TOKEN
