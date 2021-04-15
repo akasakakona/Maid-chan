@@ -12,21 +12,22 @@ import discord
 import lavalink
 from discord.ext import commands
 import json
+from MaidChan import MaidChan
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
 class Music(commands.Cog):
-    def __init__(self, maid):
-        self.maid = maid
+    def __init__(self):
+        self.maid = MaidChan.instance()
         with open('config.json') as f:
             self.config_dict = json.load(f)
             f.close()
         self.config = self.config_dict['Lavalink']
-        if not hasattr(maid, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
-            maid.lavalink = lavalink.Client(self.maid.user.id)
-            maid.lavalink.add_node(self.config['Host'], self.config['Port'], self.config['Pass'], self.config['Region'], self.config['Node'])  # Host, Port, Password, Region, Name
-            maid.add_listener(maid.lavalink.voice_update_handler, 'on_socket_response')
+        if not hasattr(self.maid, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
+            self.maid.lavalink = lavalink.Client(self.maid.user.id)
+            self.maid.lavalink.add_node(self.config['Host'], self.config['Port'], self.config['Pass'], self.config['Region'], self.config['Node'])  # Host, Port, Password, Region, Name
+            self.maid.add_listener(self.maid.lavalink.voice_update_handler, 'on_socket_response')
 
         lavalink.add_event_hook(self.track_hook)
     
