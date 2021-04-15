@@ -2,12 +2,12 @@ import json
 
 import discord
 from discord.ext import commands
-from MaidChan import MaidChan
+from Maid import Maid
 
 
 class Debugging(commands.Cog):
     def __init__(self):
-        self.maid = MaidChan.instance()
+        self.maid = Maid.instance()
         with open('config.json') as f:
             config_dict = json.load(f)
             self.ADMIN = config_dict['ADMIN']
