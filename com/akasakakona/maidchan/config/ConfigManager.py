@@ -36,7 +36,7 @@ class ConfigManager:
     __server_configs = dict()
 
     def add_new_server(self, server_id):
-        self.__server_configs[server_id] = SimpleConfig(server_id)
+        self.__server_configs[server_id] = ServerConfig(server_id)
         Util.log("Welcome server " + server_id + " to the family!")
 
     def load(self):

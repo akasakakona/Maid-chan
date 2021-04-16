@@ -1,11 +1,9 @@
-from .SimpleConfig import SimpleConfig
 import os
 import json
 from ..core import Util
 
 
 class ServerConfig:
-
     # KEEP IDENTICAL TO ConfigManager SERVER_PATH
     SERVERS_PATH = "./servers/"
 
@@ -15,20 +13,20 @@ class ServerConfig:
         self.server_id = server_id
         self.configs = dict()
         # Add configs
-        self.add_config(self.__CONFIG_MAIN, {
+        self.__add_config(self.__CONFIG_MAIN, {
             "id": self.server_id,
             "modList": [],
             "lang": "en",
             "greetChannel": 0,
             "greetPhase": "",
-            "volume" : 0.5
+            "volume": 0.5
         })
 
-    def add_config(self, name, default):
+    def __add_config(self, name, default):
         folder = self.SERVERS_PATH + self.server_id + "/"
-        if not os.path.isfile(folder + name+".json"):
+        if not os.path.isfile(folder + name + ".json"):
             Util.log(self.server_id + f" does not have a {name}.json, generating one for them.")
-            with open(folder + name+".json", "x") as file:
+            with open(folder + name + ".json", "x") as file:
                 json.dump(default, file, indent=4)
 
     def get_main(self):
