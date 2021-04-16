@@ -2,6 +2,13 @@ from .SimpleConfig import SimpleConfig
 from ..core import Util
 
 
+# Singleton ConfigManager class!
+# To access configs, use
+# from ConfigManager import ConfigManager
+# and
+# ConfigManager.instance().get_global_config()
+# or
+# ConfigManager.instance().get_server_config(server-id)
 class ConfigManager:
     __instance = None
 
