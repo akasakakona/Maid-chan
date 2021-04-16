@@ -48,5 +48,5 @@ class MaidChan(commands.Bot):
 
     def run(self):
         Util.log("Starting Maid Chan")
-        super().run(MaidChan.__TOKEN)
+        super().run(MaidChan.instance().TOKEN)
         pass
