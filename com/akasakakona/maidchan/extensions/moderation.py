@@ -118,11 +118,11 @@ class Moderation(commands.Cog):
 
     @commands.command()
     async def setMod(self, ctx):
+        new_mods = ctx.raw_mentions
         s_config = ConfigManager.instance().get_server_config(ctx.author.guild.id).get_main()
         if not is_mod(ctx):
             await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
             return
-        new_mods = ctx.raw_mentions
         for modID in new_mods:
             s_config.get("modList").append(modID)
         await ctx.send("Successfully set as mod!")
