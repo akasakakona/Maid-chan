@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 import random
-import json
 from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
 from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
+from ..config.ServerConfig import ServerConfig
 
 random.seed(time.time())
 
@@ -20,30 +20,29 @@ class Entertainment(commands.Cog):
 
     @commands.command(brief="Play Russian Roulette with your friends!")
     async def RR(self, ctx):
-        config_dict = ConfigManager.instance().get_global_config()
         if self.shotCounter == 0:
             self.bullets.insert(random.randint(0, 6), 1)
 
         if self.bullets[0] == 1:
             self.shotCounter += 1
-            if config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 await ctx.send(
                     f"OOF, {ctx.author.name} is dead! The chance of this happening is {round((self.shotCounter / 7.0) * 100)}%!")
-            elif config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 await ctx.send(f"啊，{ctx.author.name}挂了！概率是{round((self.shotCounter / 7.0) * 100)}%！")
             self.shotCounter = 0
             self.bullets = [0, 0, 0, 0, 0, 0]
         else:
             self.shotCounter += 1
             self.bullets.pop(0)
-            if config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 await ctx.send(f"Congrats! {ctx.author.name} is still alive!")
-            elif config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 await ctx.send(f"恭喜! {ctx.author.name}还活着!")
 
     @commands.command()
     async def say(self, ctx, language: str):
-        config_dict = ConfigManager.instance().get_global_config()
+        s_config = ConfigManager.instance().get_server_config(ctx.author.guild.id).get(ServerConfig.CONFIG_MAIN)
         if ctx.message.author.voice is not None:  # if the author of the message is in voice channel
             channel = ctx.message.author.voice.channel  # get what channel he is in
             voice = ctx.guild.voice_client  # from a list of voice connections, find the connection  for this server. Replacement for get(maid.voice_clients, guild = ctx.guild)
@@ -52,9 +51,9 @@ class Entertainment(commands.Cog):
             else:
                 voice = await channel.connect()  # or else, connect to the channel directly
         else:
-            if config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 await ctx.send(f"{ctx.author.mention} is not in the voice channel... I\'m lonely...")
-            elif config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 await ctx.send(f"{ctx.author.mention}不在语音频道里欸...好寂寞...")
             return
         if language == 'cn':
@@ -69,23 +68,23 @@ class Entertainment(commands.Cog):
         voiceObj.save("tts.mp3")
         voice.play(discord.FFmpegPCMAudio("tts.mp3"))
         voice.source = discord.PCMVolumeTransformer(voice.source)
-        voice.source.volume = config_dict.get("volume")
+        voice.source.volume = s_config.get("volume")
 
     @commands.command(aliases=['色图'])
     async def picSearch(self, ctx, title: str = ""):
-        config_dict = ConfigManager.instance().get_global_config()
+        g_config = ConfigManager.instance().get_global_config()
         pixivAPI = AppPixivAPI()
         # pixivAPI.login(config_dict.get("Pixiv")['ID'], config_dict.get("Pixiv")['Pass'])
         try:
-            pixivAPI.auth(refresh_token=config_dict.get("Pixiv")['TOKEN'])
+            pixivAPI.auth(refresh_token=g_config.get("Pixiv")["TOKEN"])
         except:
             return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
-        if (title == ""):
+        if title == "":
             try:
                 result = pixivAPI.illust_ranking('day_male')
             except:
                 return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
-        elif (title == "r18"):
+        elif title == "r18":
             try:
                 result = pixivAPI.illust_ranking('day_male_r18')
             except:
@@ -110,6 +109,10 @@ class Entertainment(commands.Cog):
         else:
             embed.title = "Image can\'t be found! 无法找到图片！"
             await ctx.send(embed=embed)
+
+
+def lang(ctx):
+    return ConfigManager.instance().get_server_config(ctx.guild.id).get_main().get("lang")
 
 
 def setup(maid):

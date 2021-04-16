@@ -14,7 +14,7 @@ import os
 class ConfigManager:
     __instance = None
 
-    # KEEP IDENTICAL TO ServerConfig __SERVER_PATH
+    # KEEP IDENTICAL TO ServerConfig SERVER_PATH
     SERVERS_PATH = "./servers/"
 
     @staticmethod
@@ -35,6 +35,10 @@ class ConfigManager:
     __global_config = None
     __server_configs = dict()
 
+    def add_new_server(self, server_id):
+        self.__server_configs[server_id] = SimpleConfig(server_id)
+        Util.log("Welcome server " + server_id + " to the family!")
+
     def load(self):
         self.load_global()
         self.load_servers()
@@ -47,9 +51,12 @@ class ConfigManager:
         if not os.path.isdir(self.SERVERS_PATH):
             os.mkdir(self.SERVERS_PATH)
         Util.log("Found server directories: " + str(os.listdir(self.SERVERS_PATH)))
-        for file in os.listdir(self.SERVERS_PATH):
-            if os.path.isdir(self.SERVERS_PATH+file):
-                self.__server_configs[file] = ServerConfig(file)
+        for server_id in os.listdir(self.SERVERS_PATH):
+            self.load_server(server_id)
+
+    def load_server(self, server_id):
+        if os.path.isdir(self.SERVERS_PATH + server_id):
+            self.__server_configs[server_id] = ServerConfig(server_id)
 
     def get_global_config(self):
         return self.__global_config

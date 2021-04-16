@@ -20,8 +20,8 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 class Music(commands.Cog):
     def __init__(self):
         self.maid = MaidChan.instance()
-        self.config_dict = ConfigManager.instance().get_global_config()
-        self.config = self.config_dict.get("Lavalink")
+        self.g_config = ConfigManager.instance().get_global_config()
+        self.config = self.g_config.get("Lavalink")
         if not hasattr(self.maid, "lavalink"):  # This ensures the client isn't overwritten during cog reloads.
             self.maid.lavalink = lavalink.Client(self.maid.user.id)
             self.maid.lavalink.add_node(self.config['Host'], self.config['Port'], self.config['Pass'], self.config['Region'], self.config['Node'])  # Host, Port, Password, Region, Name
@@ -130,23 +130,23 @@ class Music(commands.Cog):
                 # Add all of the tracks from the playlist to the queue.
                 player.add(requester=ctx.author.id, track=track)
             embed.title = results["playlistInfo"]["name"]
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f'Successfully added playlist \"{results["playlistInfo"]["name"]}\" into the playlist! {ctx.author.name}-sama!\n***This playlist will contain {len(tracks)} songs!***'
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f'成功为{ctx.author.name}様将您点播的歌单《{results["playlistInfo"]["name"]}》加入歌单！\n***这个歌单中包含了：{len(tracks)}首歌！***'
         else:
             track = results['tracks'][0]
             embed.title = track["info"]["title"]
             embed.url = track["info"]["uri"]
             embed.set_author(name=track["info"]["author"])
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f'Playing \"{track["info"]["title"]}\" for you right now! {ctx.author.name}-sama!\n'
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f'成功为{ctx.author.name}様播放《{track["info"]["title"]}》！\n'
 
-            if track["info"]["isStream"] and self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            if track["info"]["isStream"] and lang(ctx) == "cn":
                 embed.description += f"***啊啊啊！！{ctx.author.name}様又在DD！ぷんぷん！！女仆酱我要吃醋了哦！***"
-            elif(not track["info"]["isStream"]):
+            elif not track["info"]["isStream"]:
                 length = track["info"]["length"]
                 duration = self.msToHrMinSec(ms=length)
                 embed.description += f"***Duration: {duration[0]}:{duration[1]}:{duration[2]}***"
@@ -183,9 +183,9 @@ class Music(commands.Cog):
         await player.stop()
         # Disconnect from the voice channel.
         await self.connect_to(ctx.guild.id, None)
-        if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+        if lang(ctx) == "en":
             await ctx.send(f"Successfully disconnected for you! {ctx.author.name}-sama!")
-        elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+        elif lang(ctx) == "cn":
             await ctx.send(f"成功为您断开连接！{ctx.author.name}様！")
 
     @commands.command()
@@ -208,9 +208,9 @@ class Music(commands.Cog):
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.title = player.current.title
             embed.url = player.current.uri
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f"Successfully paused\"{player.current.title}\" for you! {ctx.author.name}-sama!"
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f"成功为您暂停了《{player.current.title}》！{ctx.author.name}様！"
             await ctx.send(embed)
 
@@ -228,9 +228,9 @@ class Music(commands.Cog):
             embed.url = player.current.uri
             embed.set_author(name=player.current.author)
             await player.skip()
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f"Successfully skipped\"{player.current.title}\" for you! {ctx.author.name}-sama!"
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f"成功为您跳过了《{player.current.title}》！{ctx.author.name}様！"
             return await ctx.send(embed=embed)
         except:
@@ -247,15 +247,15 @@ class Music(commands.Cog):
             return await ctx.send('MAID ERROR: Not in my voicechannel!')
         if player.shuffle:
             player.set_shuffle(False)
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 await ctx.send(f"Successfully un-shuffled the playlist for you! {ctx.author.name}-sama!")
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 await ctx.send(f"成功为您关闭了随机播放！{ctx.author.name}様！")
         else:
             player.set_shuffle(True)
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 await ctx.send(f"Successfully shuffled the playlist for you! {ctx.author.name}-sama!")
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 await ctx.send(f"成功为您开启了随机播放！{ctx.author.name}様！")
 
     @commands.command()
@@ -275,17 +275,21 @@ class Music(commands.Cog):
         embed.set_author(name=player.current.author)
         if player.repeat:
             player.set_repeat(False)
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f"I will stop looping \"{player.current.title}\" for you! {ctx.author.name}-sama!"
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f"成功为您关闭了《{player.current.title}》的洗脑循环！{ctx.author.name}様！"
         else:
             player.set_repeat(True)
-            if self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "en":
+            if lang(ctx) == "en":
                 embed.description = f"I will start looping \"{player.current.title}\" for you! {ctx.author.name}-sama!"
-            elif self.config_dict.get("ServerList")[str(ctx.message.guild.id)]['lang'] == "cn":
+            elif lang(ctx) == "cn":
                 embed.description = f"成功为您开启了《{player.current.title}》的洗脑循环！{ctx.author.name}様！"
         await ctx.send(embed=embed)
+
+
+def lang(ctx):
+    return ConfigManager.instance().get_server_config(ctx.guild.id).get_main().get("lang")
 
 
 def setup(maid):
