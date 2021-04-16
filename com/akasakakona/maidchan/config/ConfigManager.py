@@ -55,7 +55,7 @@ class ConfigManager:
             self.load_server(server_id)
 
     def load_server(self, server_id):
-        if os.path.isdir(self.SERVERS_PATH + server_id):
+        if os.path.isdir(self.SERVERS_PATH + str(server_id)):
             self.__server_configs[server_id] = ServerConfig(server_id)
 
     def get_global_config(self):
