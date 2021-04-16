@@ -23,7 +23,7 @@ class ServerConfig:
         })
 
     def __add_config(self, name, default):
-        folder = self.SERVERS_PATH + self.server_id + "/"
+        folder = self.SERVERS_PATH + str(self.server_id) + "/"
         if not os.path.isfile(folder + name + ".json"):
             Util.log(self.server_id + f" does not have a {name}.json, generating one for them.")
             with open(folder + name + ".json", "x") as file:

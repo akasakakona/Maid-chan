@@ -37,7 +37,7 @@ class ConfigManager:
 
     def add_new_server(self, server_id):
         self.__server_configs[server_id] = ServerConfig(server_id)
-        Util.log("Welcome server " + server_id + " to the family!")
+        Util.log("Welcome server " + str(server_id) + " to the family!")
 
     def load(self):
         self.load_global()
