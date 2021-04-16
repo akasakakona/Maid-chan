@@ -1,6 +1,7 @@
 from .SimpleConfig import SimpleConfig
 import os
 import json
+from ..core import Util
 
 
 class ServerConfig:
@@ -16,6 +17,7 @@ class ServerConfig:
         # Main config
         folder = self.__SERVERS_PATH + self.server_id + "/"
         if not os.path.isfile(folder + self.__CONFIG_MAIN_FILE):
+            Util.log(self.server_id + " does not have a config.json, generating one for them.")
             with open(folder + self.__CONFIG_MAIN_FILE, "x") as file:
                 json.dump(self.get_config_main_default(), file, indent=4)
         self.configs[self.__CONFIG_MAIN] = SimpleConfig(folder+self.__CONFIG_MAIN_FILE)
