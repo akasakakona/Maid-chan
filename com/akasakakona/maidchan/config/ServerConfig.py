@@ -13,6 +13,9 @@ class ServerConfig:
         self.server_id = server_id
         self.configs = dict()
         # Add configs
+        folder = self.SERVERS_PATH + str(self.server_id) + "/"
+        if not os.path.isdir(folder):
+            os.mkdir(path=folder)
         self.__add_config(self.__CONFIG_MAIN, {
             "id": self.server_id,
             "modList": [],
