@@ -14,7 +14,7 @@ import os
 class ConfigManager:
     __instance = None
 
-    # DO NOT TOUCH THIS WHILE RUNNING
+    # KEEP IDENTICAL TO ServerConfig __SERVER_PATH
     SERVERS_PATH = "./servers/"
 
     @staticmethod
@@ -46,9 +46,9 @@ class ConfigManager:
     def load_servers(self):
         if not os.path.isdir(self.SERVERS_PATH):
             os.mkdir(self.SERVERS_PATH)
-        Util.log(os.listdir(self.SERVERS_PATH))
+        Util.log("Found server directories: " + str(os.listdir(self.SERVERS_PATH)))
         for file in os.listdir(self.SERVERS_PATH):
-            if os.path.isdir(file):
+            if os.path.isdir(self.SERVERS_PATH+file):
                 self.__server_configs[file] = ServerConfig(file)
 
     def get_global_config(self):

@@ -6,7 +6,9 @@ from ..core import Util
 
 class ServerConfig:
 
+    # KEEP IDENTICAL TO ConfigManager __SERVER_PATH
     __SERVERS_PATH = "./servers/"
+
     __CONFIG_MAIN = "config"
     __CONFIG_MAIN_FILE = "config.json"
 
