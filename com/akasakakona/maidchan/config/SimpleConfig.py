@@ -30,7 +30,7 @@ class SimpleConfig:
         self.config[key] = value
 
     def save(self):
-        with open(self.path) as file:
+        with open(self.path, "w") as file:
             json.dump(self.config, file, indent=4)
 
     # try to use set() and save() instead of this
