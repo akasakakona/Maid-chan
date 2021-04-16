@@ -32,7 +32,7 @@ class MaidChan(commands.Bot):
             pass
 
     def load_all_extensions(self):
-        extensions = ["debugging"]
+        extensions = ["debugging", "entertainment", "moderation"]
         for extension in extensions:
             self.load_one_extension(extension)
         pass
