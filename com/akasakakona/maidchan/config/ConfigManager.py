@@ -52,11 +52,11 @@ class ConfigManager:
             os.mkdir(self.SERVERS_PATH)
         Util.log("Found server directories: " + str(os.listdir(self.SERVERS_PATH)))
         for server_id in os.listdir(self.SERVERS_PATH):
-            self.load_server(server_id)
+            self.load_server(str(server_id))
 
     def load_server(self, server_id):
-        if os.path.isdir(self.SERVERS_PATH + str(server_id)):
-            Util.log("Loading server " + str(server_id))
+        if os.path.isdir(self.SERVERS_PATH + server_id):
+            Util.log("Loading server " + server_id)
             self.__server_configs[server_id] = ServerConfig(server_id)
 
     def get_global_config(self):
@@ -64,4 +64,4 @@ class ConfigManager:
 
     def get_server_config(self, server_id):
         Util.log("Getting config for " + str(server_id) + " loaded servers " + str(self.__server_configs.keys()))
-        return self.__server_configs[server_id]
+        return self.__server_configs[str(server_id)]
