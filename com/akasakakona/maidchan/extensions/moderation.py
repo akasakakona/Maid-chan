@@ -122,7 +122,8 @@ class Moderation(commands.Cog):
         if not is_mod(ctx):
             await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
             return
-        for modID in ctx.raw_mentions:
+        new_mods = ctx.raw_mentions
+        for modID in new_mods:
             s_config.get("modList").append(modID)
         await ctx.send("Successfully set as mod!")
         s_config.save()

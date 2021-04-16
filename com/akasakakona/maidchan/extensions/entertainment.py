@@ -95,7 +95,7 @@ class Entertainment(commands.Cog):
             except:
                 return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
         embed = discord.Embed(color=discord.Color.dark_red())
-        if (len(result.illusts) != 0):
+        if len(result.illusts) != 0:
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
             imagePresent = os.path.isfile(f'illust.jpg')
             if (imagePresent):
