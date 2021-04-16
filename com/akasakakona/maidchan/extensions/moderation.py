@@ -34,13 +34,13 @@ class Moderation(commands.Cog):
         with open('config.json') as f:
             config_dict = json.load(f)
             f.close()
-        if (member.guild.id == 352312296309260289):
+        if member.guild.id == 352312296309260289:
             role = discord.utils.get(member.guild.roles, name="Notification")
             await member.add_roles(role)
         channel = member.guild.get_channel(config_dict.get("ServerList")[str(member.guild.id)]['greetChannel'])
-        if (channel is not None):
+        if channel is not None:
             greetPhrase = config_dict.get("ServerList")[str(member.guild.id)]['greetPhrase']
-            if (greetPhrase != ""):
+            if greetPhrase != "":
                 await channel.send(greetPhrase.format(memberID=member.id))
 
     # Reserved for personal use
