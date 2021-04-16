@@ -3,15 +3,13 @@ import json
 import discord
 from discord.ext import commands
 from ..core.MaidChan import MaidChan
+from ..config.ConfigManager import ConfigManager
 
 
 class Debugging(commands.Cog):
     def __init__(self, maid):
         self.maid = MaidChan.instance()
-        with open('config.json') as f:
-            config_dict = json.load(f)
-            self.ADMIN = config_dict['ADMIN']
-            f.close()
+        self.ADMIN = ConfigManager.instance().get_global_config().get("ADMIN")
 
     @commands.Cog.listener()
     async def on_ready(self):
