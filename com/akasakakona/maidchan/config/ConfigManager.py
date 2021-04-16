@@ -63,5 +63,4 @@ class ConfigManager:
         return self.__global_config
 
     def get_server_config(self, server_id):
-        Util.log("Getting config for " + str(server_id) + " loaded servers " + str(self.__server_configs.keys()))
         return self.__server_configs[str(server_id)]
