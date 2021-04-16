@@ -1,6 +1,7 @@
 import os
 import json
 from ..core import Util
+from ..config.SimpleConfig import SimpleConfig
 
 
 class ServerConfig:
@@ -31,8 +32,7 @@ class ServerConfig:
             Util.log(str(self.server_id) + f" does not have a {name}.json, generating one for them.")
             with open(folder + name + ".json", "x") as file:
                 json.dump(default, file, indent=4)
-        with open(folder + name + ".json") as file:
-            self.configs[self.__CONFIG_MAIN] = json.load(file)
+        self.configs[self.__CONFIG_MAIN] = SimpleConfig(folder + name + ".json")
 
     def get_main(self):
         return self.configs[self.__CONFIG_MAIN]
