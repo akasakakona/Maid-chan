@@ -22,7 +22,7 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        config_dict = ConfigManager.instance().get_global_config()
+        config_dict = ConfigManager.instance().get_server_config(guild.id)
         newServer = Server(guild.id)
         newServer.modList.append(guild.owner_id)
         # FIXME: maybe prompt the owner to set up the bot
@@ -144,7 +144,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     async def setMod(self, ctx):
-        with ConfigManager.instance().get_global_config().get_file as f:
+        with open('config.json') as f:
             config_dict = json.load(f)
             f.close()
         if (ctx.author.id != config_dict.get("ADMIN") and ctx.author.id not in
@@ -154,13 +154,8 @@ class Moderation(commands.Cog):
         for modID in ctx.raw_mentions:
             config_dict.get("ServerList")[str(ctx.author.guild.id)]['modList'].append(modID)
         await ctx.send("Successfully set as mod!")
-        self.modSet(config_dict)
+        config_dict.save()
         return
-
-    def modSet(self, data):
-        with ConfigManager.instance().get_global_config().get_file as json_file:
-            json.dump(data, json_file, indent=4)
-            json_file.close()
 
 
 def setup(maid):

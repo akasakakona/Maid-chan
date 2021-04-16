@@ -1,5 +1,6 @@
 from .SimpleConfig import SimpleConfig
 from ..core import Util
+import os
 
 
 # Singleton ConfigManager class!
@@ -8,9 +9,12 @@ from ..core import Util
 # and
 # ConfigManager.instance().get_global_config()
 # or
-# ConfigManager.instance().get_server_config(server-id)
+# ConfigManager.instance().get_server_config(server_id)
 class ConfigManager:
     __instance = None
+
+    # DO NOT TOUCH THIS WHILE RUNNING
+    SERVERS_PATH = "./servers/"
 
     @staticmethod
     def instance():
@@ -32,10 +36,16 @@ class ConfigManager:
 
     def load(self):
         self.load_global()
+        self.load_servers()
 
     def load_global(self):
         self.__global_config = SimpleConfig("config.json")
-        Util.log("Loaded " + self.__global_config.file.name)
+        Util.log("Loaded " + self.__global_config.path)
+
+    def load_servers(self):
+        if not os.path.isdir(self.SERVERS_PATH):
+            os.mkdir(self.SERVERS_PATH)
+        Util.log(os.listdir(self.SERVERS_PATH))
 
     def get_global_config(self):
         return self.__global_config

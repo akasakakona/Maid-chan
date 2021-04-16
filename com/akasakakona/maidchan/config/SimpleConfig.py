@@ -4,23 +4,31 @@ from ..core import Util
 
 
 class SimpleConfig:
-    file = None
+    path = None
     config = None
 
     def __init__(self, path):
+        self.path = path
         try:
-            self.file = open(path)
-            self.config = json.load(self.file)
-            Util.log("Loaded SimpleConfig \'{path}\'")
+            with open(path) as file:
+                self.config = json.load(file)
+            Util.log(f"Loaded SimpleConfig \'{path}\'")
         except FileNotFoundError:
             Util.log(f"MAID ERROR: \'{path}\' NOT FOUND UNDER \'{os.getcwd()}\'")
         pass
 
-    def get_file(self):
-        return self.file
+    def get_path(self):
+        return self.path
 
     def get_config(self):
         return self.config
 
     def get(self, key):
         return self.config[key]
+
+    def set(self, key, value):
+        self.config[key] = value
+
+    def save(self):
+        with open(self.path) as file:
+            json.dump(self.config, file, indent=4)
