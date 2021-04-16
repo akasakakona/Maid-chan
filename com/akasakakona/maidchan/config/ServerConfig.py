@@ -32,9 +32,5 @@ class ServerConfig:
             with open(folder + name + ".json", "x") as file:
                 json.dump(default, file, indent=4)
 
-    def get_servers(self):
-        return self.configs.keys()
-
     def get_main(self):
-        Util.log(self.get_servers())
         return self.configs[self.__CONFIG_MAIN]
