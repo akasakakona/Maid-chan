@@ -10,7 +10,7 @@ class Debugging(commands.Cog):
     def __init__(self, maid):
         self.maid = MaidChan.instance()
         config_dict = ConfigManager.instance().get_global_config()
-        self.ADMIN = config_dict['ADMIN']
+        self.ADMIN = config_dict.get("ADMIN")
 
     @commands.Cog.listener()
     async def on_ready(self):
