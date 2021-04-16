@@ -1,9 +1,8 @@
 from .SimpleConfig import SimpleConfig
-from .. core import Util
+from ..core import Util
 
 
 class ConfigManager:
-
     __instance = None
 
     @staticmethod
@@ -31,10 +30,8 @@ class ConfigManager:
         self.__global_config = SimpleConfig("config.json")
         Util.log("Loaded " + self.__global_config.file.name)
 
-    @staticmethod
-    def get_global_config():
-        return ConfigManager.__global_config
+    def get_global_config(self):
+        return self.__global_config
 
-    @staticmethod
-    def get_server_config(server_id):
-        return ConfigManager.__server_configs[server_id]
+    def get_server_config(self, server_id):
+        return self.__server_configs[server_id]

@@ -23,29 +23,27 @@ class MaidChan(commands.Bot):
         else:
             MaidChan.__instance = self
             ConfigManager.instance()
-            self.TOKEN = ConfigManager.get_global_config().get("TOKEN")
-            self.PREFIX = ConfigManager.get_global_config().get("PREFIX")
+            self.TOKEN = ConfigManager.instance().get_global_config().get("TOKEN")
+            self.PREFIX = ConfigManager.instance().get_global_config().get("PREFIX")
             Util.log(self.TOKEN + " " + self.PREFIX)
             # Create the bot
-            super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all());
+            super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all())
             self.load_extensions()
             Util.log("Maid-Chan Created")
             pass
 
     def load_extensions(self):
-        for extension in os.listdir('./extensions'):  # load extensions
+        for extension in os.listdir('./com/akasakakona/maidchan/extensions'):  # load extensions
             if extension.endswith('.py'):
                 try:
                     super().load_extension(f'extensions.{extension[:-3]}')
                 except Exception as e:
                     Util.log(f"{extension} Could not be loaded!")
-                    Util.log()
                 else:
                     Util.log("{} has been loaded".format(extension))
         pass
 
-    @staticmethod
-    def run():
+    def run(self):
         Util.log("Starting Maid Chan")
-        super(MaidChan.instance()).run(MaidChan.__TOKEN)
+        super().run(MaidChan.__TOKEN)
         pass

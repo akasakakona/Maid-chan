@@ -1,4 +1,4 @@
 from .MaidChan import MaidChan
 
 
-MaidChan.run()
+MaidChan.instance().run()

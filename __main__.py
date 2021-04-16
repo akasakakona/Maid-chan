@@ -1,3 +1,3 @@
-import com.asakasakona.maidchan.core as core
+import com.akasakakona.maidchan.core as core
 
 core.MaidChan.instance()
