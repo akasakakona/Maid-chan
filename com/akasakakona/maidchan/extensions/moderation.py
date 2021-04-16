@@ -92,7 +92,7 @@ class Moderation(commands.Cog):
         if not is_mod(ctx):
             await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
             return
-        greetPhrase = ctx.content[9:]
+        greetPhrase = ctx.message[9:]
         if (greetPhrase != ""):
             s_config.set("greetPhrase", greetPhrase)
             await ctx.send(f'Successfully set the server\'s greeting phrase to \"{greetPhrase}\"!')
@@ -123,8 +123,12 @@ class Moderation(commands.Cog):
             await ctx.send('MAID ERROR: PERMISSION DENIED! YOU MUST BE AN ADMIN OR A SERVER MOD!')
             return
         for modID in ctx.message.raw_mentions:
-            s_config.get("modList").append(modID)
-        await ctx.send("Successfully set as mod!")
+            if modID not in s_config.get("modList"):
+                s_config.get("modList").append(modID)
+                ctx.send(str(modID) + "successfully set as mod!")
+            else:
+                ctx.send(str(modID) + " is already a mod!")
+        await ctx.send("Operation Complete!")
         s_config.save()
         return
 
