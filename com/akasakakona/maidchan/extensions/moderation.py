@@ -144,7 +144,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     async def setMod(self, ctx):
-        with open('config.json') as f:
+        with ConfigManager.instance().get_global_config().get_file as f:
             config_dict = json.load(f)
             f.close()
         if (ctx.author.id != config_dict.get("ADMIN") and ctx.author.id not in
@@ -158,7 +158,7 @@ class Moderation(commands.Cog):
         return
 
     def modSet(self, data):
-        with open('config.json', 'w') as json_file:
+        with ConfigManager.instance().get_global_config().get_file as json_file:
             json.dump(data, json_file, indent=4)
             json_file.close()
 

@@ -16,5 +16,11 @@ class SimpleConfig:
             Util.log(f"MAID ERROR: \'{path}\' NOT FOUND UNDER \'{os.getcwd()}\'")
         pass
 
+    def get_file(self):
+        return self.file
+
+    def get_config(self):
+        return self.config
+
     def get(self, key):
         return self.config[key]
