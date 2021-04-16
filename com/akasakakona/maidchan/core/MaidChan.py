@@ -6,8 +6,6 @@ from . import Util
 
 
 class MaidChan(commands.Bot):
-    __TOKEN = ""
-    __PREFIX = ""
     __instance = None
 
     @staticmethod
@@ -18,6 +16,8 @@ class MaidChan(commands.Bot):
         return MaidChan.__instance
 
     def __init__(self):
+        __PREFIX = ""
+        __TOKEN = ""
         if MaidChan.__instance is not None:
             raise Exception("MaidChan is a singleton!")
         else:
