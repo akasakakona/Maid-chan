@@ -32,3 +32,8 @@ class SimpleConfig:
     def save(self):
         with open(self.path) as file:
             json.dump(self.config, file, indent=4)
+
+    # try to use set() and save() instead of this
+    def dump(self, data):
+        with open(self.path) as file:
+            json.dump(data, file, indent=4)

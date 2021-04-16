@@ -11,14 +11,15 @@ import re
 import discord
 import lavalink
 from discord.ext import commands
+from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
 
 class Music(commands.Cog):
-    def __init__(self, maid):
-        self.maid = maid
+    def __init__(self):
+        self.maid = MaidChan.instance()
         self.config_dict = ConfigManager.instance().get_global_config()
         self.config = self.config_dict.get("Lavalink")
         if not hasattr(self.maid, "lavalink"):  # This ensures the client isn't overwritten during cog reloads.
@@ -288,4 +289,4 @@ class Music(commands.Cog):
 
 
 def setup(maid):
-    maid.add_cog(Music(maid))
+    maid.add_cog(Music())

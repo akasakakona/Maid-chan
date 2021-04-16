@@ -7,7 +7,7 @@ from ..config.ConfigManager import ConfigManager
 
 
 class Debugging(commands.Cog):
-    def __init__(self, maid):
+    def __init__(self):
         self.maid = MaidChan.instance()
         config_dict = ConfigManager.instance().get_global_config()
         self.ADMIN = config_dict.get("ADMIN")
@@ -32,4 +32,4 @@ class Debugging(commands.Cog):
 
 
 def setup(maid):
-    maid.add_cog(Debugging(maid))
+    maid.add_cog(Debugging())

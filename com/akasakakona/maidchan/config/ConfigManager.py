@@ -1,4 +1,5 @@
 from .SimpleConfig import SimpleConfig
+from .ServerConfig import ServerConfig
 from ..core import Util
 import os
 
@@ -46,6 +47,9 @@ class ConfigManager:
         if not os.path.isdir(self.SERVERS_PATH):
             os.mkdir(self.SERVERS_PATH)
         Util.log(os.listdir(self.SERVERS_PATH))
+        for file in os.listdir(self.SERVERS_PATH):
+            if os.path.isdir(file):
+                self.__server_configs[file] = ServerConfig(file)
 
     def get_global_config(self):
         return self.__global_config

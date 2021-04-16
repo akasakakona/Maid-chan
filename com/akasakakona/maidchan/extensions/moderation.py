@@ -17,7 +17,7 @@ class Server:
 
 
 class Moderation(commands.Cog):
-    def __init__(self, maid):
+    def __init__(self):
         self.maid = MaidChan.instance()
 
     @commands.Cog.listener()
@@ -159,4 +159,4 @@ class Moderation(commands.Cog):
 
 
 def setup(maid):
-    maid.add_cog(Moderation(maid))
+    maid.add_cog(Moderation())
