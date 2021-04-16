@@ -4,6 +4,7 @@ import discord
 import discord.utils
 from discord.ext import commands
 from ..core.MaidChan import MaidChan
+from ..config.ConfigManager import ConfigManager
 
 
 class Server:
@@ -21,9 +22,7 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        with open('config.json') as f:
-            config_dict = json.load(f)
-            f.close()
+        config_dict = ConfigManager.instance().get_global_config()
         newServer = Server(guild.id)
         newServer.modList.append(guild.owner_id)
         #FIXME: maybe prompt the owner to set up the bot

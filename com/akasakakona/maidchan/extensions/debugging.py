@@ -9,12 +9,13 @@ from ..config.ConfigManager import ConfigManager
 class Debugging(commands.Cog):
     def __init__(self, maid):
         self.maid = MaidChan.instance()
-        self.ADMIN = ConfigManager.instance().get_global_config().get("ADMIN")
+        config_dict = ConfigManager.instance().get_global_config()
+        self.ADMIN = config_dict['ADMIN']
 
     @commands.Cog.listener()
     async def on_ready(self):
         await self.maid.change_presence(status=discord.Status.online, activity=discord.Game(" with catgirls"))
-        # self.maid.load_extension(f'extensions.music')
+        self.maid.load_one_extension("music")
         print(f"Logged in as {self.maid.user.name}")
 
     @commands.command()

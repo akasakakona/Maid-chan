@@ -6,7 +6,8 @@ from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
-from core.MaidChan import MaidChan
+from ..core.MaidChan import MaidChan
+from ..config.ConfigManager import ConfigManager
 
 random.seed(time.time())
 
@@ -19,9 +20,7 @@ class Entertainment(commands.Cog):
 
     @commands.command(brief = "Play Russian Roulette with your friends!")
     async def RR(self, ctx):
-        with open('config.json') as f:
-            config_dict = json.load(f)
-            f.close()
+        config_dict = ConfigManager.instance().get_global_config()
         if self.shotCounter == 0:
             self.bullets.insert(random.randint(0, 6), 1)
 

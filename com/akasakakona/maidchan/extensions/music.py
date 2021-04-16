@@ -12,6 +12,7 @@ import discord
 import lavalink
 from discord.ext import commands
 import json
+from ..config.ConfigManager import ConfigManager
 
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 
@@ -19,9 +20,7 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 class Music(commands.Cog):
     def __init__(self, maid):
         self.maid = maid
-        with open('config.json') as f:
-            self.config_dict = json.load(f)
-            f.close()
+        self.config_dict = ConfigManager.instance().get_global_config()
         self.config = self.config_dict['Lavalink']
         if not hasattr(self.maid, 'lavalink'):  # This ensures the client isn't overwritten during cog reloads.
             self.maid.lavalink = lavalink.Client(self.maid.user.id)
