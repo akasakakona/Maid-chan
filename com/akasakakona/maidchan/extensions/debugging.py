@@ -14,7 +14,7 @@ class Debugging(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.maid.change_presence(status=discord.Status.online, activity=discord.Game(" with catgirls"))
-        self.maid.load_extension(f'extensions.music')
+        # self.maid.load_extension(f'extensions.music')
         print(f"Logged in as {self.maid.user.name}")
 
     @commands.command()
