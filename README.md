@@ -1,6 +1,6 @@
 # Maid-chan Introuction
 <a href = "https://discord.gg/6qKGErK">
-    <img src="https://www.akasakakona.com/img/f5uq0NV.png" alt="Join Discord" style="width:42px;height:42px;" class="center" >
+    <img src="https://raw.githubusercontent.com/akasakakona/akasakakona.github.io/master/img/f5uq0NV.png" alt="Join Discord" style="width:42px;height:42px;" class="center" >
 </a>
 
 
@@ -10,7 +10,7 @@ She is being updated slowly.
 
 BUT she is getting better and better with every update!
 
-![alt text](https://www.akasakakona.com/img/maid_chan.jpg "Maid-chan")
+![alt text](https://raw.githubusercontent.com/akasakakona/akasakakona.github.io/master/img/maid_chan.jpg "Maid-chan")
 
 
 # Dependencies
