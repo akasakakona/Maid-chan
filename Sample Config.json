@@ -1,6 +1,5 @@
 {
     "TOKEN": "",
-    "volume": 0.5,
     "ADMIN": 0,
     "PREFIX":"",
     "Pixiv":{
@@ -12,8 +11,5 @@
         "Pass":"",
         "Region":"",
         "Node":""
-    },
-    "ServerList": {
-    
     }
 }

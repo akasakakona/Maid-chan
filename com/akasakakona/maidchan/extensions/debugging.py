@@ -1,21 +1,19 @@
-import json
-
 import discord
 from discord.ext import commands
+from ..core.MaidChan import MaidChan
+from ..config.ConfigManager import ConfigManager
 
 
 class Debugging(commands.Cog):
-    def __init__(self, maid):
-        self.maid = maid
-        with open('config.json') as f:
-            config_dict = json.load(f)
-            self.ADMIN = config_dict['ADMIN']
-            f.close()
-    
+    def __init__(self):
+        self.maid = MaidChan.instance()
+        config_dict = ConfigManager.instance().get_global_config()
+        self.ADMIN = config_dict.get("ADMIN")
+
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.maid.change_presence(status=discord.Status.online, activity = discord.Game(" with catgirls"))
-        self.maid.load_extension(f'extensions.music')
+        await self.maid.change_presence(status=discord.Status.online, activity=discord.Game(" with catgirls"))
+        self.maid.load_one_extension("music")
         print(f"Logged in as {self.maid.user.name}")
 
     @commands.command()
@@ -24,11 +22,12 @@ class Debugging(commands.Cog):
 
     @commands.command(aliases=['off'])
     async def shutdown(self, ctx):
-        if(ctx.author.id != self.ADMIN):
+        if ctx.author.id != self.ADMIN:
             return await ctx.send("MAID ERROR: ACCESS DENIED! YOU ARE NOT AKASAKAKONA-SAMA! GO AWAY!! ‎(︶ ︿ ︶)")
         await ctx.send('Settings Saved! AkasakaKona-Sama! See you later~  (> ^ <)')
 
         await self.maid.close()
 
+
 def setup(maid):
-    maid.add_cog(Debugging(maid))
+    maid.add_cog(Debugging())
