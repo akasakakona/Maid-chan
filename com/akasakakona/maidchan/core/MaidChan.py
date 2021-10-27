@@ -43,6 +43,7 @@ class MaidChan(commands.Bot):
             super().load_extension(base_path+name)
         except Exception as e:
             Util.log(f"{name} Could not be loaded!")
+            raise e
         else:
             Util.log("{} has been loaded".format(name))
 
