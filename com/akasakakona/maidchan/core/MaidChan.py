@@ -32,9 +32,9 @@ class MaidChan(commands.Bot):
             pass
 
     def load_all_extensions(self):
-        extensions = ["debugging", "entertainment", "moderation"]
-        for extension in extensions:
-            self.load_one_extension(extension)
+        for extension in os.listdir("com/akasakakona/maidchan/extensions"):
+            if extension.endswith(".py") and not extension.startswith("_"):
+                self.load_one_extension(extension[:-3])
         pass
 
     def load_one_extension(self, name):
