@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 import random
 from gtts import gTTS
 import os
@@ -94,7 +94,7 @@ class Entertainment(commands.Cog):
                 result = pixivAPI.search_illust(title, sort="popular_desc", search_target='title_and_caption')
             except:
                 return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
-        embed = discord.Embed(color=discord.Color.dark_red())
+        embed = nextcord.Embed(color=discord.Color.dark_red())
         if len(result.illusts) != 0:
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
             imagePresent = os.path.isfile(f'illust.jpg')

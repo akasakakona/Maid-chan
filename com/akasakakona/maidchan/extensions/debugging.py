@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
 
@@ -12,8 +12,7 @@ class Debugging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.maid.change_presence(status=discord.Status.online, activity=discord.Game(" with catgirls"))
-        self.maid.load_one_extension("music")
+        await self.maid.change_presence(status=nextcord.Status.online, activity=nextcord.Game(" with catgirls"))
         print(f"Logged in as {self.maid.user.name}")
 
     @commands.command()

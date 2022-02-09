@@ -1,6 +1,6 @@
-import discord
+import nextcord
 import os
-from discord.ext import commands
+from nextcord.ext import commands
 from ..config.ConfigManager import ConfigManager
 from . import Util
 
@@ -26,7 +26,7 @@ class MaidChan(commands.Bot):
             self.TOKEN = ConfigManager.instance().get_global_config().get("TOKEN")
             self.PREFIX = ConfigManager.instance().get_global_config().get("PREFIX")
             # Create the bot
-            super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=discord.Intents.all())
+            super().__init__(command_prefix=commands.when_mentioned_or(self.PREFIX), intents=nextcord.Intents.all())
             self.load_all_extensions()
             Util.log("Maid-Chan Created")
             pass

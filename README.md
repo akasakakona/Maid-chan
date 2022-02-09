@@ -14,7 +14,7 @@ BUT she is getting better and better with every update!
 
 
 # Dependencies
-- [discord.py[voice]](https://discordpy.readthedocs.io/en/latest/index.html)
+- [nextcord[voice]](https://discordpy.readthedocs.io/en/latest/index.html)
 - [pixivpy3](https://pypi.org/project/PixivPy/)
 - [gTTS](https://pypi.org/project/gTTS/)
 - [lavalink](https://github.com/Devoxin/Lavalink.py)

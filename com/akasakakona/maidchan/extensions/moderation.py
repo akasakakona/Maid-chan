@@ -1,6 +1,6 @@
-import discord
-import discord.utils
-from discord.ext import commands
+import nextcord
+import nextcord.utils
+from nextcord.ext import commands
 from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
 
@@ -17,7 +17,7 @@ class Moderation(commands.Cog):
     async def on_member_join(self, member):
         s_config = ConfigManager.instance().get_server_config(member.guild.id).get_main()
         if member.guild.id == 352312296309260289:
-            role = discord.utils.get(member.guild.roles, name="Notification")
+            role = nextcord.utils.get(member.guild.roles, name="Notification")
             await member.add_roles(role)
         channel = member.guild.get_channel(s_config.get("greetChannel"))
         if channel is not None:
@@ -33,7 +33,7 @@ class Moderation(commands.Cog):
             guildID = payload.guild_id
             guild = self.maid.get_guild(guildID)
             if payload.emoji.name == 'derp':
-                role = discord.utils.get(guild.roles, name="Notification")
+                role = nextcord.utils.get(guild.roles, name="Notification")
             if role is not None:
                 member = guild.get_member(payload.user_id)
                 if member is not None:
@@ -57,7 +57,7 @@ class Moderation(commands.Cog):
             guildID = payload.guild_id
             guild = self.maid.get_guild(guildID)
             if payload.emoji.name == 'derp':
-                role = discord.utils.get(guild.roles, name="Notification")
+                role = nextcord.utils.get(guild.roles, name="Notification")
             if role is not None:
                 member = guild.get_member(payload.user_id)
                 if member is not None:

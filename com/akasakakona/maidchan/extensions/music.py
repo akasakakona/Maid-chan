@@ -8,9 +8,9 @@ https://github.com/Frederikam/Lavalink/blob/master/IMPLEMENTATION.md
 """
 import re
 import secrets
-import discord
+import nextcord
 import lavalink
-from discord.ext import commands
+from nextcord.ext import commands
 from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
 
@@ -115,7 +115,7 @@ class Music(commands.Cog):
         if not results or not results['tracks']:
             return await ctx.send('Nothing found!')
 
-        embed = discord.Embed(color=discord.Color.dark_red())
+        embed = nextcord.Embed(color=nextcord.Color.dark_red())
 
         # Valid loadTypes are:
         #   TRACK_LOADED    - single video/direct URL)
@@ -205,7 +205,7 @@ class Music(commands.Cog):
             return await ctx.send('MAID ERROR: Player already paused!')
         else:
             await player.set_pause(True)
-            embed = discord.Embed(color=discord.Color.dark_red())
+            embed = nextcord.Embed(color=nextcord.Color.dark_red())
             embed.title = player.current.title
             embed.url = player.current.uri
             if lang(ctx) == "en":
@@ -223,7 +223,7 @@ class Music(commands.Cog):
         if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
             return await ctx.send('MAID ERROR: Not in my voicechannel!')
         try:
-            embed = discord.Embed(color=discord.Color.dark_red())
+            embed = nextcord.Embed(color=nextcord.Color.dark_red())
             embed.title = player.current.title
             embed.url = player.current.uri
             embed.set_author(name=player.current.author)
@@ -269,7 +269,7 @@ class Music(commands.Cog):
             # Abuse prevention. Users not in voice channels, or not in the same voice channel as the maid
             # may not disconnect the maid.
             return await ctx.send('MAID ERROR: Not in my voicechannel!')
-        embed = discord.Embed(color=discord.Color.dark_red())
+        embed = nextcord.Embed(color=nextcord.Color.dark_red())
         embed.title = player.current.title
         embed.url = player.current.uri
         embed.set_author(name=player.current.author)
