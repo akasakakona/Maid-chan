@@ -66,8 +66,8 @@ class Entertainment(commands.Cog):
         txt = ctx.message.content[8:]
         voiceObj = gTTS(text=txt, lang=language, slow=False)
         voiceObj.save("tts.mp3")
-        voice.play(discord.FFmpegPCMAudio("tts.mp3"))
-        voice.source = discord.PCMVolumeTransformer(voice.source)
+        voice.play(nextcord.FFmpegPCMAudio("tts.mp3"))
+        voice.source = nextcord.PCMVolumeTransformer(voice.source)
         voice.source.volume = s_config.get("volume")
 
     @commands.command(aliases=['色图'])
@@ -94,7 +94,7 @@ class Entertainment(commands.Cog):
                 result = pixivAPI.search_illust(title, sort="popular_desc", search_target='title_and_caption')
             except:
                 return await ctx.send("MAID ERROR: FUCK PIXIV! REQUEST FAILED, PLEASE TRY AGAIN!")
-        embed = nextcord.Embed(color=discord.Color.dark_red())
+        embed = nextcord.Embed(color=nextcord.Color.dark_red())
         if len(result.illusts) != 0:
             illust = result.illusts[random.randint(0, len(result.illusts) - 1)]
             imagePresent = os.path.isfile(f'illust.jpg')
@@ -105,7 +105,7 @@ class Entertainment(commands.Cog):
             embed.url = f"https://www.pixiv.net/artworks/{illust.id}"
             embed.set_image(url="attachment://illust.jpg")
             embed.set_author(name=illust.user.name, url=f"https://www.pixiv.net/users/{illust.user.id}")
-            await ctx.send(embed=embed, file=discord.File(f'illust.jpg'))
+            await ctx.send(embed=embed, file=nextcord.File(f'illust.jpg'))
         else:
             embed.title = "Image can\'t be found! 无法找到图片！"
             await ctx.send(embed=embed)
