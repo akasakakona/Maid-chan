@@ -5,6 +5,8 @@ from gtts import gTTS
 import os
 from pixivpy3 import AppPixivAPI
 import time
+import ctypes
+from ctypes import util
 from ..core.MaidChan import MaidChan
 from ..config.ConfigManager import ConfigManager
 from ..config.ServerConfig import ServerConfig
@@ -64,11 +66,12 @@ class Entertainment(commands.Cog):
             await voice.disconnect()
             return
         txt = ctx.message.content[8:]
+        nextcord.opus.load_opus(ctypes.util.find_library('opus'))
         voiceObj = gTTS(text=txt, lang=language, slow=False)
         voiceObj.save("tts.mp3")
-        voice.play(nextcord.FFmpegPCMAudio("tts.mp3"))
-        voice.source = nextcord.PCMVolumeTransformer(voice.source)
-        voice.source.volume = s_config.get("volume")
+        voice.play(nextcord.FFmpegOpusAudio("tts.mp3"))
+        # voice.source = nextcord.PCMVolumeTransformer(voice.source)
+        # voice.source.volume = s_config.get("volume")
 
     @commands.command(aliases=['色图'])
     async def picSearch(self, ctx, title: str = ""):
